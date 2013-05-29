@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Ik word gezond</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Instellingen</string>
     <string name="edit_message">Edit message</string>
     
     <string name="gewicht">Gewicht</string>
@@ -12,6 +12,7 @@
 
     <string-array name="menuitems_array">
         <item>Profiel</item>
+        <item>Nieuwe meeting</item>
     </string-array>
     
     <string name="drawer_open">Open navigation drawer</string>

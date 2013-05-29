@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -90,7 +91,7 @@ public class MainActivity extends Activity {
     	
 		try {
 	    	// Create a new fragment based on the chosen menu item
-	    	String className = "me.rasing.ikwordgezond." + getResources().getStringArray(R.array.menuitems_array)[position] + "Fragment";
+	    	String className = "me.rasing.ikwordgezond." + getResources().getStringArray(R.array.menuitems_array)[position].replaceAll("\\s","") + "Fragment";
 	    	
 			Class<?> cl = Class.forName(className);
 			Constructor<?> con;
