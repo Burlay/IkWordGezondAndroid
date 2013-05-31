@@ -3,6 +3,7 @@ package me.rasing.ikwordgezond;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
@@ -12,13 +13,10 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String COMMA_SEP = " ,";
 	
-	private static final String SQL_CREATE_ENTRIES =
+	private static final String SQL_CREATE_METINGEN =
 			"CREATE TABLE " + Metingen.TABLE_NAME + " (" +
 			Metingen._ID + " INTEGER PRIMARY KEY," +
-			Metingen.COLUMN_NAME_GEWICHT + TEXT_TYPE + COMMA_SEP +
-			Metingen.COLUMN_NAME_SPIERMASSA + TEXT_TYPE + COMMA_SEP +
-			Metingen.COLUMN_NAME_VET + TEXT_TYPE + COMMA_SEP +
-			Metingen.COLUMN_NAME_WATER + TEXT_TYPE + COMMA_SEP +
+			Metingen.COLUMN_NAME_GEWICHT + TEXT_TYPE +
 			" )";
 
 
@@ -29,7 +27,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_METINGEN);
 	}
 
 	@Override

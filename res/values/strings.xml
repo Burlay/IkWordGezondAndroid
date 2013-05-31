@@ -4,6 +4,7 @@
     <string name="app_name">Ik word gezond</string>
     <string name="action_settings">Instellingen</string>
     <string name="edit_message">Edit message</string>
+    <string name="button_send">Send</string>
     
     <string name="gewicht">Gewicht</string>
     <string name="spiermassa">Spiermassa</string>

@@ -44,28 +44,37 @@
         android:orientation="vertical" >
 	    
 	    <EditText
+	        android:id="@+id/gewicht"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="bottom"
 	        android:inputType="numberDecimal" />
 
 	    <EditText
+	        android:id="@+id/vet"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="bottom"
 	        android:inputType="numberDecimal" />
 
 	    <EditText
+	        android:id="@+id/spiermassa"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="bottom"
 	        android:inputType="numberDecimal" />
 
 	    <EditText
+	        android:id="@+id/water"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="bottom"
 	        android:inputType="numberDecimal" />
+	    <Button
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/button_send"
+    		android:onClick="sendMessage" />
 
 	 </LinearLayout>
 </LinearLayout>
