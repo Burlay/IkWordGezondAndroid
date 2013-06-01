@@ -8,73 +8,25 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
     
-    <LinearLayout
-	    android:layout_width="wrap_content"
-	    android:layout_height="match_parent"
-	    android:orientation="vertical" >
-    
-	    <TextView 
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-    		android:gravity="bottom"
-	        android:text="@string/gewicht"/>
-	    <TextView 
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-    		android:gravity="bottom"
-	        android:text="@string/vet"/>
-	    <TextView 
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-    		android:gravity="bottom"
-	        android:text="@string/spiermassa"/>
-	    <TextView 
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-    		android:gravity="bottom"
-	        android:text="@string/water"/>
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical" >
-	    
-	    <EditText
-	        android:id="@+id/gewicht"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="bottom"
-	        android:inputType="numberDecimal" />
+    <EditText
+        android:id="@+id/gewicht"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:inputType="numberDecimal" />
 
-	    <EditText
-	        android:id="@+id/vet"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="bottom"
-	        android:inputType="numberDecimal" />
+    <TextView
+        android:id="@+id/editDate"
+        style="?android:attr/spinnerStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="showDatePickerDialog" />
 
-	    <EditText
-	        android:id="@+id/spiermassa"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="bottom"
-	        android:inputType="numberDecimal" />
-
-	    <EditText
-	        android:id="@+id/water"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="bottom"
-	        android:inputType="numberDecimal" />
-	    <Button
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/button_send"
-    		android:onClick="sendMessage" />
-
-	 </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_send"
+   		android:onClick="sendMessage" />
 </LinearLayout>

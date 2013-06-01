@@ -16,7 +16,7 @@ public class ProfielFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
-    	SQLiteDatabase db = mDbHelper.getReadableDatabase();
+    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
     	// Define a projection that specifies which columns from the database
     	// you will actually use after this query.
@@ -44,7 +44,7 @@ public class ProfielFragment extends Fragment{
     	    cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
     	);
     	
-    	Log.d("test", itemId);
+    	db.close();
     	
     	View rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
 
