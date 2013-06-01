@@ -3,10 +3,16 @@ package me.rasing.ikwordgezond;
 import java.util.Calendar;
 
 import android.app.Fragment;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class NieuwemeetingFragment extends Fragment{
@@ -15,6 +21,8 @@ public class NieuwemeetingFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+    	setHasOptionsMenu(true);
+    	
         View rootView = inflater.inflate(R.layout.fragment_nieuwemeeting, container, false);
         
         // Use the current date as the default date in the picker
@@ -25,8 +33,48 @@ public class NieuwemeetingFragment extends Fragment{
         
         TextView editDate = (TextView) rootView.findViewById(R.id.editDate);
         editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
+        
         getActivity().setTitle("Nieuwe meeting");
         
         return rootView;
+    }
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    	inflater.inflate(R.menu.nieuwe_meeting_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	// handle item selection
+    	switch (item.getItemId()) {
+    	case R.id.action_done:
+    		EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
+    		String message = editText.getText().toString();
+
+    		TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
+    		String datum = editDate.getText().toString();
+
+    		// Gets the data repository in write mode
+    		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
+    		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+    		// Create a new map of values, where column names are the keys
+    		ContentValues values = new ContentValues();
+    		values.put(Metingen.COLUMN_NAME_GEWICHT, message);
+    		values.put(Metingen.COLUMN_NAME_DATUM, datum);
+
+    		// Insert the new row, returning the primary key value of the new row
+    		db.insert(
+    				Metingen.TABLE_NAME,
+    				null,
+    				values);
+
+    		db.close();
+
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
     }
 }

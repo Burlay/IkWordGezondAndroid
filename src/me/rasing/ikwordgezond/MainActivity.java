@@ -11,8 +11,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -22,13 +20,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	private DbHelper mDbHelper;
-	
 	private String[] mMenuItems;
 	private ListView mDrawerList;
 	private DrawerLayout mDrawerLayout;
@@ -40,8 +35,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		mDbHelper = new DbHelper(getBaseContext());
 		
 		setContentView(R.layout.activity_main);
 
@@ -97,30 +90,6 @@ public class MainActivity extends Activity {
     	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     		selectItem(position);
     	}
-    }
-    
-    /** Called when the user clicks the Send button */
-    public void sendMessage(View view) {
-    	EditText editText = (EditText) findViewById(R.id.gewicht);
-    	String message = editText.getText().toString();
-    	
-    	TextView editDate = (TextView) findViewById(R.id.editDate);
-    	String datum = editDate.getText().toString();
-
-    	// Gets the data repository in write mode
-    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-    	// Create a new map of values, where column names are the keys
-    	ContentValues values = new ContentValues();
-    	values.put(Metingen.COLUMN_NAME_GEWICHT, message);
-    	values.put(Metingen.COLUMN_NAME_DATUM, datum);
-    	
-    	// Insert the new row, returning the primary key value of the new row
-    	long newRowId;
-    	newRowId = db.insert(
-    	         Metingen.TABLE_NAME,
-    	         null,
-    	         values);
     }
 
     public static class DatePickerFragment extends DialogFragment

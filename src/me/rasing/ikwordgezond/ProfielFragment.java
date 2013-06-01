@@ -22,7 +22,8 @@ public class ProfielFragment extends Fragment{
     	// you will actually use after this query.
     	String[] projection = {
     	    Metingen._ID,
-    	    Metingen.COLUMN_NAME_GEWICHT
+    	    Metingen.COLUMN_NAME_GEWICHT,
+    	    Metingen.COLUMN_NAME_DATUM
     	    };
 
     	// How you want the results sorted in the resulting Cursor
@@ -31,18 +32,24 @@ public class ProfielFragment extends Fragment{
 
     	Cursor cursor = db.query(
     	    Metingen.TABLE_NAME,  // The table to query
-    	    projection,                               // The columns to return
-    	    null,                                // The columns for the WHERE clause
-    	    null,                            // The values for the WHERE clause
-    	    null,                                     // don't group the rows
-    	    null,                                   // don't filter by row groups
-    	    null
+    	    projection,           // The columns to return
+    	    null,                 // The columns for the WHERE clause
+    	    null,                 // The values for the WHERE clause
+    	    null,                 // don't group the rows
+    	    null,                 // don't filter by row groups
+    	    Metingen.COLUMN_NAME_DATUM + " DESC",
+    	    "1"
     	    );
     	
     	cursor.moveToFirst();
     	String itemId = cursor.getString(
     	    cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
     	);
+    	while(cursor.moveToNext()) {
+    		Log.d("DB", cursor.getString(
+    				cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
+    				));
+    	}
     	
     	db.close();
     	
