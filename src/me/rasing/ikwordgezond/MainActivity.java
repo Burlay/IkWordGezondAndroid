@@ -2,13 +2,9 @@ package me.rasing.ikwordgezond;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Calendar;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -19,9 +15,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	private String[] mMenuItems;
@@ -91,37 +85,9 @@ public class MainActivity extends Activity {
     		selectItem(position);
     	}
     }
-
-    public static class DatePickerFragment extends DialogFragment
-    implements DatePickerDialog.OnDateSetListener {
-		String DATE_SEP = "-";
-
-    	@Override
-    	public Dialog onCreateDialog(Bundle savedInstanceState) {
-    		// Use the current date as the default date in the picker
-    		final Calendar c = Calendar.getInstance();
-    		int year = c.get(Calendar.YEAR);
-    		int month = c.get(Calendar.MONTH);
-    		int day = c.get(Calendar.DAY_OF_MONTH);
-
-    		// Create a new instance of DatePickerDialog and return it
-    		return new DatePickerDialog(getActivity(), this, year, month, day);
-    	}
-
-    	public void onDateSet(DatePicker view, int year, int month, int day) {
-            TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
-            editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
-    	}
-    }
-    
-    public void showDatePickerDialog(View v) {
-    	DialogFragment newFragment = new DatePickerFragment();
-    	newFragment.show(getFragmentManager(), "datePicker");
-    }
     
     @SuppressLint("NewApi")
 	private void selectItem(int position) {
-    	
 		try {
 	    	// Create a new fragment based on the chosen menu item
 	    	String className = "me.rasing.ikwordgezond." + getResources().getStringArray(R.array.menuitems_array)[position].replaceAll("\\s","") + "Fragment";

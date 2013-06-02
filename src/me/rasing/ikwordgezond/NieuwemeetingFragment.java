@@ -2,6 +2,9 @@ package me.rasing.ikwordgezond;
 
 import java.util.Calendar;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,11 +14,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class NieuwemeetingFragment extends Fragment{
+public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 	String DATE_SEP = "-";
 
     @Override
@@ -33,6 +38,7 @@ public class NieuwemeetingFragment extends Fragment{
         
         TextView editDate = (TextView) rootView.findViewById(R.id.editDate);
         editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
+        editDate.setOnClickListener(this);
         
         getActivity().setTitle("Nieuwe meeting");
         
@@ -77,4 +83,36 @@ public class NieuwemeetingFragment extends Fragment{
     		return super.onOptionsItemSelected(item);
     	}
     }
+
+    public static class DatePickerFragment extends DialogFragment
+    implements DatePickerDialog.OnDateSetListener {
+		String DATE_SEP = "-";
+
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		// Use the current date as the default date in the picker
+    		final Calendar c = Calendar.getInstance();
+    		int year = c.get(Calendar.YEAR);
+    		int month = c.get(Calendar.MONTH);
+    		int day = c.get(Calendar.DAY_OF_MONTH);
+
+    		// Create a new instance of DatePickerDialog and return it
+    		return new DatePickerDialog(getActivity(), this, year, month, day);
+    	}
+
+    	public void onDateSet(DatePicker view, int year, int month, int day) {
+            TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
+            editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
+    	}
+    }
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.editDate:
+		    	DialogFragment newFragment = new DatePickerFragment();
+		    	newFragment.show(getFragmentManager(), "datePicker");
+				break;
+		}
+	}
 }
