@@ -7,11 +7,11 @@
     <string name="action_opslaan">Opslaan</string>
     
     <string name="gewicht">Gewicht</string>
-    
 
     <string-array name="menuitems_array">
         <item>Profiel</item>
         <item>Nieuwe meeting</item>
+        <item>Geschiedenis</item>
     </string-array>
     
     <string name="drawer_open">Open navigation drawer</string>
