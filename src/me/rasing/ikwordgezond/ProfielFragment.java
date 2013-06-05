@@ -40,11 +40,14 @@ public class ProfielFragment extends Fragment{
     	    Metingen.COLUMN_NAME_DATUM + " DESC",
     	    "1"
     	    );
-    	
+
     	cursor.moveToFirst();
-    	String itemId = cursor.getString(
-    	    cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
-    	);
+    	String weight = cursor.getString(
+    			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
+    			);
+    	String datum = cursor.getString(
+    			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM)
+    			);
     	while(cursor.moveToNext()) {
     		Log.d("DB", cursor.getString(
     				cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
@@ -55,8 +58,11 @@ public class ProfielFragment extends Fragment{
     	
     	View rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
 
-        TextView editText = (TextView) rootView.findViewById(R.id.gewicht2);
-    	editText.setText(itemId);
+        TextView txtWeight = (TextView) rootView.findViewById(R.id.gewicht);
+    	txtWeight.setText(weight + " kg");
+
+        TextView txtDatum = (TextView) rootView.findViewById(R.id.datum);
+    	txtDatum.setText(datum);
         
         getActivity().setTitle("Profiel");
         return rootView;
