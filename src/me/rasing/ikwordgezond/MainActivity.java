@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -74,6 +75,23 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	// handle item selection
+    	switch (item.getItemId()) {
+    	case R.id.action_geschiedenis:
+    		Fragment fragment = new GeschiedenisFragment();
+
+    		// Insert the fragment by replacing any existing fragment
+    		FragmentManager fragmentManager = getFragmentManager();
+    		fragmentManager.beginTransaction()
+    			           .replace(R.id.content_frame,  fragment)
+    			           .commit();
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
 	
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
     	

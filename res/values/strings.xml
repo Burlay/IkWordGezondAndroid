@@ -4,7 +4,10 @@
     <string name="app_name">Ik word gezond</string>
     
     <string name="action_settings">Instellingen</string>
+    <string name="action_geschiedenis">Geschiedenis</string>
+    
     <string name="action_opslaan">Opslaan</string>
+    <string name="actie_nieuw">Toevoegen</string>
     
     <string name="gewicht">Gewicht</string>
 

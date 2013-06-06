@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -77,6 +78,14 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     				values);
 
     		db.close();
+    		
+    		Fragment fragment = new ProfielFragment();
+
+    		// Insert the fragment by replacing any existing fragment
+    		FragmentManager fragmentManager = getFragmentManager();
+    		fragmentManager.beginTransaction()
+    			           .replace(R.id.content_frame,  fragment)
+    			           .commit();
 
     		return true;
     	default:
