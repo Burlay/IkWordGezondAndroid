@@ -8,6 +8,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -56,6 +58,11 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     	// handle item selection
     	switch (item.getItemId()) {
     	case R.id.action_done:
+
+
+InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+    		
     		EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
     		String message = editText.getText().toString();
 
@@ -83,6 +90,9 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 
     		// Insert the fragment by replacing any existing fragment
     		FragmentManager fragmentManager = getFragmentManager();
+    		
+    		fragmentManager.popBackStack();
+    		
     		fragmentManager.beginTransaction()
     			           .replace(R.id.content_frame,  fragment)
     			           .commit();

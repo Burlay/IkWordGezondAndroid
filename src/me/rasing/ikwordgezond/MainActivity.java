@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	// handle item selection
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
     		FragmentManager fragmentManager = getFragmentManager();
     		fragmentManager.beginTransaction()
     			           .replace(R.id.content_frame,  fragment)
+    			           .addToBackStack(null)
     			           .commit();
     		return true;
     	default:
