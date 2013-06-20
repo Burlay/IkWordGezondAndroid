@@ -1,11 +1,15 @@
 package me.rasing.ikwordgezond;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,10 +36,7 @@ public class ProfielFragment extends Fragment {
     	    Metingen.COLUMN_NAME_DATUM
     	    };
 
-    	// How you want the results sorted in the resulting Cursor
-    	//String sortOrder =
-    	//    FeedReaderContract.FeedEntry.COLUMN_NAME_UPDATED + " DESC";
-
+    	// Get the 2 most recent weights.
     	Cursor cursor = db.query(
     	    Metingen.TABLE_NAME,  // The table to query
     	    projection,           // The columns to return
@@ -44,34 +45,77 @@ public class ProfielFragment extends Fragment {
     	    null,                 // don't group the rows
     	    null,                 // don't filter by row groups
     	    Metingen.COLUMN_NAME_DATUM + " DESC",
-    	    "1"
+    	    "2"
     	    );
 
     	cursor.moveToFirst();
-    	String weight = cursor.getString(
+    	float weight = cursor.getFloat(
     			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
     			);
     	String datum = cursor.getString(
     			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM)
     			);
-    	while(cursor.moveToNext()) {
-    		Log.d("DB", cursor.getString(
-    				cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
-    				));
+    	
+    	// Save the difference between the 2 most recent weights.
+    	cursor.moveToNext();
+    	float difference = weight - cursor.getFloat(cursor.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT));
+    	String previousDate = cursor.getString(
+    			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM)
+    			);
+    	
+    	// Get the first weight so we can calculate the difference since the start.
+    	cursor = db.query(
+    	    Metingen.TABLE_NAME,  // The table to query
+    	    projection,           // The columns to return
+    	    null,                 // The columns for the WHERE clause
+    	    null,                 // The values for the WHERE clause
+    	    null,                 // don't group the rows
+    	    null,                 // don't filter by row groups
+    	    Metingen.COLUMN_NAME_DATUM + " ASC",
+    	    "1"
+    	    );
+
+    	cursor.moveToFirst();
+    	float startWeight = cursor.getFloat(
+    			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
+    			);
+
+    	db.close();
+
+    	View rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
+    	
+    	try {
+    		SimpleDateFormat format = 
+    				new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
+    		
+    		// Calculate the total weight lost or gained and display it.
+    		float totalLost = weight - startWeight;
+
+    		TextView txtTotalLost = (TextView) rootView.findViewById(R.id.fragmentProfielTotal);
+    		txtTotalLost.setText(NumberFormat.getInstance().format(totalLost) + " kg");
+    		
+    		// Display the difference between the 2 most recents weights.
+
+    		TextView txtDifference = (TextView) rootView.findViewById(R.id.fragmentProfielDifference);
+    		txtDifference.setText(NumberFormat.getInstance().format(difference) + " kg");
+
+    		TextView txtVorigeDatum = (TextView) rootView.findViewById(R.id.fragmentProfielPreviousDate);
+    		txtVorigeDatum.setText(format.parse(previousDate).toString());
+    		
+    		// Display the current weight.
+    		TextView txtWeight = (TextView) rootView.findViewById(R.id.gewicht);
+    		txtWeight.setText(NumberFormat.getInstance().format(weight) + " kg");
+    		
+    		TextView txtDatum = (TextView) rootView.findViewById(R.id.datum);
+    		txtDatum.setText(format.parse(datum).toString());
+    	} catch (ParseException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
     	}
     	
-    	db.close();
+    	getActivity().setTitle("Profiel");
     	
-    	View rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
-
-        TextView txtWeight = (TextView) rootView.findViewById(R.id.gewicht);
-    	txtWeight.setText(weight + " kg");
-
-        TextView txtDatum = (TextView) rootView.findViewById(R.id.datum);
-    	txtDatum.setText(datum);
-        
-        getActivity().setTitle("Profiel");
-        return rootView;
+    	return rootView;
     }
     
     @Override

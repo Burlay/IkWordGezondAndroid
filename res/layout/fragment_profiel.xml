@@ -1,27 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:paddingBottom="16dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="16dp" >
+    android:paddingTop="36dp" >
+
+
+    <TextView
+        android:id="@+id/fragmentProfielTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="3 Kg"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="36sp" />
+    <TextView
+        android:id="@+id/fragmentProfielTotaalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/fragmentProfielTotal"
+        android:text="Totaal afgevallen"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+
+    <TextView
+        android:id="@+id/fragmentProfielDifference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fragmentProfielTotaalText"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="36dp"
+        android:text="-0,5 Kg"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="36sp" />    
+    <TextView
+        android:id="@+id/fragmentProfielPreviousDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fragmentProfielDifference"
+        android:layout_centerHorizontal="true"
+        android:text="Sinds 31 Augustus"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
 
     <TextView
         android:id="@+id/gewicht"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="36sp" />
-
+        android:layout_below="@+id/fragmentProfielPreviousDate"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="36dp"
+        android:text="80 Kg"
+        android:textSize="36sp" />    
     <TextView
         android:id="@+id/datum"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="TextView"
-        android:textSize="18sp" />
+        android:layout_below="@+id/gewicht"
+        android:layout_centerHorizontal="true"
+        android:text="Gewicht op 32 Augustus" />
 
-</LinearLayout>
+</RelativeLayout>

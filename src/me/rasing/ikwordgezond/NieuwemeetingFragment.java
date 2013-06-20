@@ -7,10 +7,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 	String DATE_SEP = "-";
@@ -43,6 +46,9 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
         editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
         editDate.setOnClickListener(this);
         
+        TextView editTime = (TextView) rootView.findViewById(R.id.editTime);
+        editTime.setOnClickListener(this);
+        
         getActivity().setTitle("Nieuwe meeting");
         
         return rootView;
@@ -58,16 +64,17 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     	// handle item selection
     	switch (item.getItemId()) {
     	case R.id.action_done:
-
-
-InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     		
     		EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
     		String message = editText.getText().toString();
 
     		TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
     		String datum = editDate.getText().toString();
+    		
+    		TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
+    		String time = editTime.getText().toString();
 
     		// Gets the data repository in write mode
     		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
@@ -76,7 +83,7 @@ imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0)
     		// Create a new map of values, where column names are the keys
     		ContentValues values = new ContentValues();
     		values.put(Metingen.COLUMN_NAME_GEWICHT, message);
-    		values.put(Metingen.COLUMN_NAME_DATUM, datum);
+    		values.put(Metingen.COLUMN_NAME_DATUM, datum + " " + time);
 
     		// Insert the new row, returning the primary key value of the new row
     		db.insert(
@@ -102,6 +109,20 @@ imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0)
     		return super.onOptionsItemSelected(item);
     	}
     }
+    
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.editDate:
+		    	DialogFragment newFragment = new DatePickerFragment();
+		    	newFragment.show(getFragmentManager(), "datePicker");
+				break;
+			case R.id.editTime:
+				DialogFragment timePicker = new TimePickerFragment();
+				timePicker.show(getFragmentManager(), "timePicker");
+				break;
+		}
+	}
 
     public static class DatePickerFragment extends DialogFragment
     implements DatePickerDialog.OnDateSetListener {
@@ -124,14 +145,27 @@ imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0)
             editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
     	}
     }
+    
+    public static class TimePickerFragment extends DialogFragment
+    implements TimePickerDialog.OnTimeSetListener {
+		String TIME_SEP = ":";
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.editDate:
-		    	DialogFragment newFragment = new DatePickerFragment();
-		    	newFragment.show(getFragmentManager(), "datePicker");
-				break;
-		}
-	}
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		// Use the current time as the default values for the picker
+    		final Calendar c = Calendar.getInstance();
+    		int hour = c.get(Calendar.HOUR_OF_DAY);
+    		int minute = c.get(Calendar.MINUTE);
+
+    		// Create a new instance of TimePickerDialog and return it
+    		return new TimePickerDialog(getActivity(), this, hour, minute,
+    				DateFormat.is24HourFormat(getActivity()));
+    	}
+
+    	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
+            editTime.setText(Integer.toString(hourOfDay) + TIME_SEP + String.format("%02d", minute));
+    	}
+    }
+
 }
