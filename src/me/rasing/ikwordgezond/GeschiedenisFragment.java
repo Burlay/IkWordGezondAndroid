@@ -1,20 +1,29 @@
 package me.rasing.ikwordgezond;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import android.app.Fragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 public class GeschiedenisFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.fragment_geschiedenig, container, false);
+		final View rootView = inflater.inflate(R.layout.fragment_geschiedenig, container, false);
+		final MetingenAdapter dataAdapter;
 
 		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -54,7 +63,7 @@ public class GeschiedenisFragment extends Fragment {
 
 		// create the adapter using the cursor pointing to the desired data
 		//as well as the layout information
-		SimpleCursorAdapter dataAdapter = new SimpleCursorAdapter(
+		dataAdapter = new MetingenAdapter(
 				getActivity(), R.layout.geschiedenis_list_item,
 				cursor,
 				columns,
@@ -65,6 +74,79 @@ public class GeschiedenisFragment extends Fragment {
 		listView.setAdapter(dataAdapter);
 
 		db.close();
+		
+		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+		    @Override
+		    public void onItemCheckedStateChanged(ActionMode mode, int position,
+		                                          long id, boolean checked) {
+		    	dataAdapter.toggleSelection(position);
+		    	dataAdapter.notifyDataSetChanged();
+		    }
+
+		    @Override
+		    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		        // Respond to clicks on the actions in the CAB
+		        switch (item.getItemId()) {
+		            case R.id.actie_delete:
+		        		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
+		            	SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+		            	// Define 'where' part of query.
+		            	String selection = Metingen._ID + "=";
+		            	// Specify arguments in placeholder order.
+		            	
+		            	ArrayList<Integer> selected_positions = dataAdapter.getSelectedPositions();
+		            	
+		            	String[] selectionArgs = new String[selected_positions.size()];
+		            	ArrayList<String> i = new ArrayList<String>();
+		            	
+		            	Iterator<Integer> iterator = selected_positions.iterator();
+		            	while (iterator.hasNext()) {
+		            		Integer pos = iterator.next();
+			            	Cursor c = (Cursor) listView.getItemAtPosition(pos);
+			            	int id = c.getInt(c.getColumnIndex("_id"));
+			            	i.add(pos.toString());
+			            	// Issue SQL statement.
+			            	db.delete(Metingen.TABLE_NAME, Metingen._ID + "="+Integer.toString(id), null);
+			            	Log.d("test", Integer.toString(id));
+		            	}
+
+		            	// Issue SQL statement.
+		            	//db.delete(Metingen.TABLE_NAME, selection, i.toArray(selectionArgs));
+		            	
+		                //deleteSelectedItems();
+		                mode.finish(); // Action picked, so close the CAB
+		                
+		                dataAdapter.notifyDataSetChanged();
+		                return true;
+		            default:
+		                return false;
+		        }
+		    }
+
+		    @Override
+		    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		        // Inflate the menu for the CAB
+		        MenuInflater inflater = mode.getMenuInflater();
+		        inflater.inflate(R.menu.cab_geschiedenis, menu);
+		        return true;
+		    }
+
+		    @Override
+		    public void onDestroyActionMode(ActionMode mode) {
+		        // Here you can make any necessary updates to the activity when
+		        // the CAB is removed. By default, selected items are deselected/unchecked.
+		    }
+
+		    @Override
+		    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		        // Here you can perform updates to the CAB due to
+		        // an invalidate() request
+		        return false;
+		    }
+		});
 		
 		return rootView;
 	}

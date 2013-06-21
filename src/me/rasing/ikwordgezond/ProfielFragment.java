@@ -27,7 +27,7 @@ public class ProfielFragment extends Fragment {
     	
 		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
     	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
+    	
     	// Define a projection that specifies which columns from the database
     	// you will actually use after this query.
     	String[] projection = {

@@ -41,12 +41,15 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 		int year = c.get(Calendar.YEAR);
 		int month = c.get(Calendar.MONTH);
 		int day = c.get(Calendar.DAY_OF_MONTH);
+		int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+		int minutes = c.get(Calendar.MINUTE);
         
         TextView editDate = (TextView) rootView.findViewById(R.id.editDate);
         editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
         editDate.setOnClickListener(this);
         
         TextView editTime = (TextView) rootView.findViewById(R.id.editTime);
+        editTime.setText(Integer.toString(hourOfDay) + ":" + Integer.toString(minutes));
         editTime.setOnClickListener(this);
         
         getActivity().setTitle("Nieuwe meeting");
