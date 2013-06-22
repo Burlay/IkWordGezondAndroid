@@ -7,15 +7,17 @@
     <string name="action_opslaan">Opslaan</string>
     <string name="actie_nieuw">Toevoegen</string>
     <string name="gewicht">Gewicht</string>
-
-        <string name="profiel">Profiel</string>
-        <string name="nieuwe_weging">Weging toevoegen</string>
-        <string name="geschiedenis">Geschiedenis</string>
-        <string name="instellingen">Instellingen</string>
-
+    <string name="profiel">Profiel</string>
+    <string name="nieuwe_weging">Weging toevoegen</string>
+    <string name="geschiedenis">Voortgang</string>
+    <string name="instellingen">Instellingen</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="title_activity_metingen_detail">MetingenDetailActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="totaal_tekst">totaal afgevallen</string>
+    <string name="sinds_vorige_tekst">sinds vorige weging afgevallen</string>
+    <string name="huidig_gewicht_tekst">huidig gewicht</string>
+    <string name="title_activity_meeting_invoeren">MeetingInvoerenActivity</string>
 
 </resources>

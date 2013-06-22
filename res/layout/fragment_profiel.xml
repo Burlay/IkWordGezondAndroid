@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="3 Kg"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="36sp" />
     <TextView
@@ -24,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/fragmentProfielTotal"
-        android:text="totaal afgevallen"
+        android:text="@string/totaal_tekst"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
@@ -36,7 +35,6 @@
         android:layout_below="@+id/fragmentProfielTotaalText"
         android:layout_centerHorizontal="true"
         android:paddingTop="36dp"
-        android:text="-0,5 Kg"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="36sp" />    
     <TextView
@@ -45,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fragmentProfielDifference"
         android:layout_centerHorizontal="true"
-        android:text="sinds vorige weging afgevallen"
+        android:text="@string/sinds_vorige_tekst"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
@@ -56,7 +54,6 @@
         android:layout_below="@+id/fragmentProfielPreviousDate"
         android:layout_centerHorizontal="true"
         android:paddingTop="36dp"
-        android:text="80 Kg"
         android:textSize="36sp" />    
     <TextView
         android:id="@+id/datum"
@@ -64,6 +61,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/gewicht"
         android:layout_centerHorizontal="true"
-        android:text="huidig gewicht" />
+        android:text="@string/huidig_gewicht_tekst" />
 
 </RelativeLayout>

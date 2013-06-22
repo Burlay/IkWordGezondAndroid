@@ -26,6 +26,10 @@
             android:name="me.rasing.ikwordgezond.MetingenDetailActivity"
             android:label="@string/title_activity_metingen_detail" >
         </activity>
+        <activity
+            android:name="me.rasing.ikwordgezond.MeetingInvoerenActivity"
+            android:label="@string/title_activity_meeting_invoeren" >
+        </activity>
     </application>
 
 </manifest>

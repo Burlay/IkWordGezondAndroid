@@ -1,6 +1,12 @@
 package me.rasing.ikwordgezond;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -54,8 +60,25 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 		
 		c.moveToPosition(position);
 		
-		holder.gewicht.setText(c.getString(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)));
-		holder.datum.setText(c.getString(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM)));
+		SimpleDateFormat format = 
+				new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.FRANCE);
+		
+		final String datum = c.getString(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
+		
+		try {
+			final Date d = format.parse(datum);
+			
+			final NumberFormat numberFormatter = NumberFormat.getInstance();
+			numberFormatter.setMinimumFractionDigits(2);
+			
+			final String number = numberFormatter.format(c.getFloat(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)));
+			
+			holder.gewicht.setText(number + " kg");
+			holder.datum.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(d));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if (selected_positions.contains(position)) {
 			inView.setBackgroundColor(Color.rgb(238, 233, 233));
