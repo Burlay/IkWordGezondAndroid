@@ -156,7 +156,7 @@ public class GeschiedenisFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view, int pos,
 					long id) {
 				Cursor c = (Cursor) parent.getItemAtPosition(pos);
-				Log.d("test", c.getString(c.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT)));
+				
 				Intent intent = new Intent(getActivity(), MetingenDetailActivity.class);
 				intent.putExtra(MetingenDetailActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
 				startActivity(intent);

@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -105,14 +106,9 @@ public class ProfielFragment extends Fragment {
     	// handle item selection
     	switch (item.getItemId()) {
     	case R.id.actie_nieuw:
-    		Fragment fragment = new NieuwemeetingFragment();
-
-    		// Insert the fragment by replacing any existing fragment
-    		FragmentManager fragmentManager = getFragmentManager();
-    		fragmentManager.beginTransaction()
-    			           .replace(R.id.container,  fragment)
-    			           .addToBackStack(null)
-    			           .commit();
+			Intent intent = new Intent(getActivity(), MeetingInvoerenActivity.class);
+			startActivity(intent);
+			
     		return true;
     	default:
     		return super.onOptionsItemSelected(item);

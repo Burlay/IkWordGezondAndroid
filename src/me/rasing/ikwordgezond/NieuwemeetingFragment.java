@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -96,16 +97,7 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 
     		db.close();
     		
-    		Fragment fragment = new ProfielFragment();
-
-    		// Insert the fragment by replacing any existing fragment
-    		FragmentManager fragmentManager = getFragmentManager();
-    		
-    		fragmentManager.popBackStack();
-    		
-//    		fragmentManager.beginTransaction()
-//    			           .replace(R.id.content_frame,  fragment)
-//    			           .commit();
+    		getActivity().finish();
 
     		return true;
     	default:
