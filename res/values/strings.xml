@@ -2,13 +2,10 @@
 <resources>
 
     <string name="app_name">Ik word gezond</string>
-    
     <string name="action_settings">Instellingen</string>
     <string name="action_geschiedenis">Geschiedenis</string>
-    
     <string name="action_opslaan">Opslaan</string>
     <string name="actie_nieuw">Toevoegen</string>
-    
     <string name="gewicht">Gewicht</string>
 
     <string-array name="menuitems_array">
@@ -16,7 +13,10 @@
         <item>Nieuwe meeting</item>
         <item>Geschiedenis</item>
     </string-array>
-    
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="title_activity_metingen_detail">MetingenDetailActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

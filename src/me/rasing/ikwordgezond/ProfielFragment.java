@@ -1,9 +1,6 @@
 package me.rasing.ikwordgezond;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -52,16 +49,10 @@ public class ProfielFragment extends Fragment {
     	float weight = cursor.getFloat(
     			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
     			);
-    	String datum = cursor.getString(
-    			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM)
-    			);
     	
     	// Save the difference between the 2 most recent weights.
     	cursor.moveToNext();
     	float difference = weight - cursor.getFloat(cursor.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT));
-    	String previousDate = cursor.getString(
-    			cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM)
-    			);
     	
     	// Get the first weight so we can calculate the difference since the start.
     	cursor = db.query(
@@ -83,35 +74,21 @@ public class ProfielFragment extends Fragment {
     	db.close();
 
     	View rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
-    	
-    	try {
-    		SimpleDateFormat format = 
-    				new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE);
-    		
-    		// Calculate the total weight lost or gained and display it.
-    		float totalLost = weight - startWeight;
 
-    		TextView txtTotalLost = (TextView) rootView.findViewById(R.id.fragmentProfielTotal);
-    		txtTotalLost.setText(NumberFormat.getInstance().format(totalLost) + " kg");
-    		
-    		// Display the difference between the 2 most recents weights.
+    	// Calculate the total weight lost or gained and display it.
+    	float totalLost = weight - startWeight;
 
-    		TextView txtDifference = (TextView) rootView.findViewById(R.id.fragmentProfielDifference);
-    		txtDifference.setText(NumberFormat.getInstance().format(difference) + " kg");
+    	TextView txtTotalLost = (TextView) rootView.findViewById(R.id.fragmentProfielTotal);
+    	txtTotalLost.setText(NumberFormat.getInstance().format(totalLost) + " kg");
 
-    		TextView txtVorigeDatum = (TextView) rootView.findViewById(R.id.fragmentProfielPreviousDate);
-    		txtVorigeDatum.setText(format.parse(previousDate).toString());
-    		
-    		// Display the current weight.
-    		TextView txtWeight = (TextView) rootView.findViewById(R.id.gewicht);
-    		txtWeight.setText(NumberFormat.getInstance().format(weight) + " kg");
-    		
-    		TextView txtDatum = (TextView) rootView.findViewById(R.id.datum);
-    		txtDatum.setText(format.parse(datum).toString());
-    	} catch (ParseException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	}
+    	// Display the difference between the 2 most recent weights.
+
+    	TextView txtDifference = (TextView) rootView.findViewById(R.id.fragmentProfielDifference);
+    	txtDifference.setText(NumberFormat.getInstance().format(difference) + " kg");
+
+    	// Display the current weight.
+    	TextView txtWeight = (TextView) rootView.findViewById(R.id.gewicht);
+    	txtWeight.setText(NumberFormat.getInstance().format(weight) + " kg");
     	
     	getActivity().setTitle("Profiel");
     	

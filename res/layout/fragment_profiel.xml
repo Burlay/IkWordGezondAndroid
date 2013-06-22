@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/fragmentProfielTotal"
-        android:text="Totaal afgevallen"
+        android:text="totaal afgevallen"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fragmentProfielDifference"
         android:layout_centerHorizontal="true"
-        android:text="Sinds 31 Augustus"
+        android:text="sinds vorige weging afgevallen"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
@@ -64,6 +64,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/gewicht"
         android:layout_centerHorizontal="true"
-        android:text="Gewicht op 32 Augustus" />
+        android:text="huidig gewicht" />
 
 </RelativeLayout>

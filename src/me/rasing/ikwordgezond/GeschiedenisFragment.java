@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,11 +12,13 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class GeschiedenisFragment extends Fragment {
@@ -94,12 +97,12 @@ public class GeschiedenisFragment extends Fragment {
 		            	SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
 		            	// Define 'where' part of query.
-		            	String selection = Metingen._ID + "=";
+		            	//String selection = Metingen._ID + "=";
 		            	// Specify arguments in placeholder order.
 		            	
 		            	ArrayList<Integer> selected_positions = dataAdapter.getSelectedPositions();
 		            	
-		            	String[] selectionArgs = new String[selected_positions.size()];
+		            	//String[] selectionArgs = new String[selected_positions.size()];
 		            	ArrayList<String> i = new ArrayList<String>();
 		            	
 		            	Iterator<Integer> iterator = selected_positions.iterator();
@@ -148,6 +151,19 @@ public class GeschiedenisFragment extends Fragment {
 		    }
 		});
 		
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos,
+					long id) {
+				Cursor c = (Cursor) parent.getItemAtPosition(pos);
+				Log.d("test", c.getString(c.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT)));
+				Intent intent = new Intent(getActivity(), MetingenDetailActivity.class);
+				intent.putExtra(MetingenDetailActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
+				startActivity(intent);
+			}
+
+		});
+
 		return rootView;
 	}
 }
