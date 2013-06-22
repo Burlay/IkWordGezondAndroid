@@ -4,9 +4,9 @@ import java.util.Calendar;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -103,9 +103,9 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     		
     		fragmentManager.popBackStack();
     		
-    		fragmentManager.beginTransaction()
-    			           .replace(R.id.content_frame,  fragment)
-    			           .commit();
+//    		fragmentManager.beginTransaction()
+//    			           .replace(R.id.content_frame,  fragment)
+//    			           .commit();
 
     		return true;
     	default:

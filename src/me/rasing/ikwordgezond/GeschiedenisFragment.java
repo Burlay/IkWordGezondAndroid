@@ -3,7 +3,7 @@ package me.rasing.ikwordgezond;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

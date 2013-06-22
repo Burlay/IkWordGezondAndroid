@@ -8,11 +8,10 @@
     <string name="actie_nieuw">Toevoegen</string>
     <string name="gewicht">Gewicht</string>
 
-    <string-array name="menuitems_array">
-        <item>Profiel</item>
-        <item>Nieuwe meeting</item>
-        <item>Geschiedenis</item>
-    </string-array>
+        <string name="profiel">Profiel</string>
+        <string name="nieuwe_weging">Weging toevoegen</string>
+        <string name="geschiedenis">Geschiedenis</string>
+        <string name="instellingen">Instellingen</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

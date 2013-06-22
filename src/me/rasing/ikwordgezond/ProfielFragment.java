@@ -2,8 +2,8 @@ package me.rasing.ikwordgezond;
 
 import java.text.NumberFormat;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -110,7 +110,7 @@ public class ProfielFragment extends Fragment {
     		// Insert the fragment by replacing any existing fragment
     		FragmentManager fragmentManager = getFragmentManager();
     		fragmentManager.beginTransaction()
-    			           .replace(R.id.content_frame,  fragment)
+    			           .replace(R.id.container,  fragment)
     			           .addToBackStack(null)
     			           .commit();
     		return true;

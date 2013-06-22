@@ -1,52 +1,68 @@
 package me.rasing.ikwordgezond;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.widget.ArrayAdapter;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity implements OnNavigationListener {
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		Fragment fragment = new ProfielFragment();
 
-		// Insert the fragment by replacing any existing fragment
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
-			           .replace(R.id.content_frame,  fragment)
-			           .commit();
-		
 		setContentView(R.layout.activity_main);
+		
+		// Set up the action bar to show a dropdown list.
+		final ActionBar actionBar = getActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+		// Set up the dropdown list navigation in the action bar.
+		actionBar.setListNavigationCallbacks(
+		// Specify a SpinnerAdapter to populate the dropdown list.
+				new ArrayAdapter<String>(getActionBarThemedContextCompat(),
+						android.R.layout.simple_list_item_1,
+						android.R.id.text1, new String[] {
+								getString(R.string.profiel),
+								getString(R.string.geschiedenis)}),
+						this);
+	}
+
+	/**
+	 * Backward-compatible version of {@link ActionBar#getThemedContext()} that
+	 * simply returns the {@link android.app.Activity} if
+	 * <code>getThemedContext</code> is unavailable.
+	 */
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	private Context getActionBarThemedContextCompat() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			return getActionBar().getThemedContext();
+		} else {
+			return this;
+		}
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+	public boolean onNavigationItemSelected(int pos, long id) {
+		Fragment fragment = null;
+		switch (pos) {
+			case 0:
+				fragment = new ProfielFragment();
+				break;
+			case 1:
+				fragment = new GeschiedenisFragment();
+		}
+		
+		getSupportFragmentManager()
+			.beginTransaction()
+			.replace(R.id.container, fragment)
+			.commit();
+		return false;
 	}
-	
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	// handle item selection
-    	switch (item.getItemId()) {
-    	case R.id.action_geschiedenis:
-    		Fragment fragment = new GeschiedenisFragment();
-
-    		// Insert the fragment by replacing any existing fragment
-    		FragmentManager fragmentManager = getFragmentManager();
-    		fragmentManager.beginTransaction()
-    			           .replace(R.id.content_frame,  fragment)
-    			           .addToBackStack(null)
-    			           .commit();
-    		return true;
-    	default:
-    		return super.onOptionsItemSelected(item);
-    	}
-    }
 }
