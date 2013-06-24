@@ -1,19 +1,22 @@
 package me.rasing.ikwordgezond;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.text.format.DateFormat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,18 +42,14 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
         
         // Use the current date as the default date in the picker
 		final Calendar c = Calendar.getInstance();
-		int year = c.get(Calendar.YEAR);
-		int month = c.get(Calendar.MONTH);
-		int day = c.get(Calendar.DAY_OF_MONTH);
-		int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
-		int minutes = c.get(Calendar.MINUTE);
+		final Date today = c.getTime();
         
         TextView editDate = (TextView) rootView.findViewById(R.id.editDate);
-        editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
+        editDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(today));
         editDate.setOnClickListener(this);
         
         TextView editTime = (TextView) rootView.findViewById(R.id.editTime);
-        editTime.setText(Integer.toString(hourOfDay) + ":" + Integer.toString(minutes));
+        editTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(today));
         editTime.setOnClickListener(this);
         
         getActivity().setTitle("Nieuwe meeting");
@@ -72,28 +71,36 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 			imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     		
     		EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
-    		String message = editText.getText().toString();
+    		String gewicht = editText.getText().toString();
 
     		TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
-    		String datum = editDate.getText().toString();
+    		String mDatum = editDate.getText().toString();
     		
     		TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
-    		String time = editTime.getText().toString();
+    		String mTijdstip = editTime.getText().toString();
 
     		// Gets the data repository in write mode
     		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
     		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+    		
+    		try {
+				Date datum = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).parse(mDatum + " " + mTijdstip);
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
-    		// Create a new map of values, where column names are the keys
-    		ContentValues values = new ContentValues();
-    		values.put(Metingen.COLUMN_NAME_GEWICHT, message);
-    		values.put(Metingen.COLUMN_NAME_DATUM, datum + " " + time);
+	    		// Create a new map of values, where column names are the keys
+	    		ContentValues values = new ContentValues();
+	    		values.put(Metingen.COLUMN_NAME_GEWICHT, gewicht);
+	    		values.put(Metingen.COLUMN_NAME_DATUM, formatter.format(datum));
 
-    		// Insert the new row, returning the primary key value of the new row
-    		db.insert(
-    				Metingen.TABLE_NAME,
-    				null,
-    				values);
+	    		// Insert the new row, returning the primary key value of the new row
+	    		db.insert(
+	    				Metingen.TABLE_NAME,
+	    				null,
+	    				values);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
     		db.close();
     		
@@ -154,7 +161,7 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 
     		// Create a new instance of TimePickerDialog and return it
     		return new TimePickerDialog(getActivity(), this, hour, minute,
-    				DateFormat.is24HourFormat(getActivity()));
+    				android.text.format.DateFormat.is24HourFormat(getActivity()));
     	}
 
     	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
