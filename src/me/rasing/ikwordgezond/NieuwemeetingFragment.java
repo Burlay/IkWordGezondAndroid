@@ -16,7 +16,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,8 +30,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class NieuwemeetingFragment extends Fragment implements OnClickListener{
-	String DATE_SEP = "-";
-
+	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -128,12 +126,22 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 
     public static class DatePickerFragment extends DialogFragment
     implements DatePickerDialog.OnDateSetListener {
-		String DATE_SEP = "-";
-
     	@Override
     	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
+    		String mDatum = editDate.getText().toString();
+			
     		// Use the current date as the default date in the picker
-    		final Calendar c = Calendar.getInstance();
+    		Calendar c = Calendar.getInstance();
+    		
+			try {
+				Date datum = DateFormat.getDateInstance(DateFormat.LONG).parse(mDatum);
+	    		c.setTime(datum);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
     		int year = c.get(Calendar.YEAR);
     		int month = c.get(Calendar.MONTH);
     		int day = c.get(Calendar.DAY_OF_MONTH);
@@ -143,19 +151,34 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     	}
 
     	public void onDateSet(DatePicker view, int year, int month, int day) {
+    		// Use the current date as the default date in the picker
+    		Calendar c = Calendar.getInstance();
+    		c.set(year, month, day);
+    		
             TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
-            editDate.setText(Integer.toString(year) + DATE_SEP + String.format("%02d", month) + DATE_SEP + String.format("%02d", day));
+            editDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(c.getTime()));
     	}
     }
     
     public static class TimePickerFragment extends DialogFragment
     implements TimePickerDialog.OnTimeSetListener {
-		String TIME_SEP = ":";
-
+		
     	@Override
     	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
+    		String mTijdstip = editTime.getText().toString();
+    		
     		// Use the current time as the default values for the picker
     		final Calendar c = Calendar.getInstance();
+    		
+			try {
+				Date tijdstip = DateFormat.getTimeInstance(DateFormat.SHORT).parse(mTijdstip);
+	    		c.setTime(tijdstip);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
     		int hour = c.get(Calendar.HOUR_OF_DAY);
     		int minute = c.get(Calendar.MINUTE);
 
@@ -165,8 +188,13 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     	}
 
     	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    		// Use the current date as the default date in the picker
+    		Calendar c = Calendar.getInstance();
+    		c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+    		c.set(Calendar.MINUTE, minute);
+    		
             TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
-            editTime.setText(Integer.toString(hourOfDay) + TIME_SEP + String.format("%02d", minute));
+            editTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime()));
     	}
     }
 
