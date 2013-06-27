@@ -1,17 +1,21 @@
-package me.rasing.ikwordgezond;
+package me.rasing.mijngewicht;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import me.rasing.mijngewicht.R;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -30,6 +34,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class NieuwemeetingFragment extends Fragment implements OnClickListener{
+	private int id = 0;
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,19 +43,76 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     	
         View rootView = inflater.inflate(R.layout.fragment_nieuwemeeting, container, false);
         
-        // Use the current date as the default date in the picker
-		final Calendar c = Calendar.getInstance();
-		final Date today = c.getTime();
-        
         TextView editDate = (TextView) rootView.findViewById(R.id.editDate);
-        editDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(today));
         editDate.setOnClickListener(this);
-        
         TextView editTime = (TextView) rootView.findViewById(R.id.editTime);
-        editTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(today));
         editTime.setOnClickListener(this);
-        
-        getActivity().setTitle("Nieuwe meeting");
+		
+		final Intent intent = getActivity().getIntent();
+		id = intent.getIntExtra(MeetingInvoerenActivity.ID, 0);
+		
+		if (id != 0) {
+			final DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
+			final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+			// Define a projection that specifies which columns from the database
+			// you will actually use after this query.
+			final String[] projection = {
+					Metingen._ID,
+					Metingen.COLUMN_NAME_GEWICHT,
+					Metingen.COLUMN_NAME_DATUM
+			};
+			
+			//final String[] values = {Integer.toString(id)};
+
+			// How you want the results sorted in the resulting Cursor
+			//String sortOrder =
+			//    FeedReaderContract.FeedEntry.COLUMN_NAME_UPDATED + " DESC";
+
+			final Cursor c = db.query(
+					Metingen.TABLE_NAME,  // The table to query
+					projection,           // The columns to return
+					Metingen._ID + "=" + Integer.toString(id),         // The columns for the WHERE clause
+					null,               // The values for the WHERE clause
+					null,                 // don't group the rows
+					null,                 // don't filter by row groups
+					Metingen.COLUMN_NAME_DATUM + " DESC"
+					);
+			
+			c.moveToFirst();
+	    	final double gewicht = c.getDouble(
+	    			c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
+	    			);
+	    	final String datum = c.getString(
+	    			c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM)
+	    			);
+	    	
+	    	db.close();
+	    	
+			TextView mWeight = (TextView) rootView.findViewById(R.id.gewicht);
+			mWeight.setText(NumberFormat.getInstance().format(gewicht));
+			
+			SimpleDateFormat format = 
+					new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+			try {
+				//txtDatum.setText(format.parse(datum).toString());
+				editDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(format.parse(datum)));
+				//txtTijd.setText(format.parse(datum).toString());
+				editTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(format.parse(datum)));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+	        // Use the current date as the default date in the picker
+			final Calendar c = Calendar.getInstance();
+			final Date today = c.getTime();
+	        
+	        editDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(today));
+	        editTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(today));
+	        
+	        getActivity().setTitle("Nieuwe meeting");
+		}
         
         return rootView;
     }
@@ -65,42 +127,56 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
     	// handle item selection
     	switch (item.getItemId()) {
     	case R.id.action_done:
+			// Gets the data repository in write mode
+			DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
+			SQLiteDatabase db = mDbHelper.getWritableDatabase();
+			
+
 			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-    		
-    		EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
-    		String gewicht = editText.getText().toString();
 
-    		TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
-    		String mDatum = editDate.getText().toString();
-    		
-    		TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
-    		String mTijdstip = editTime.getText().toString();
+			EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
+			String gewicht = editText.getText().toString();
 
-    		// Gets the data repository in write mode
-    		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
-    		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-    		
-    		try {
+			TextView editDate = (TextView) getActivity().findViewById(R.id.editDate);
+			String mDatum = editDate.getText().toString();
+
+			TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
+			String mTijdstip = editTime.getText().toString();
+
+			try {
 				Date datum = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).parse(mDatum + " " + mTijdstip);
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
-	    		// Create a new map of values, where column names are the keys
-	    		ContentValues values = new ContentValues();
-	    		values.put(Metingen.COLUMN_NAME_GEWICHT, gewicht);
-	    		values.put(Metingen.COLUMN_NAME_DATUM, formatter.format(datum));
+				// Create a new map of values, where column names are the keys
+				ContentValues values = new ContentValues();
+				values.put(Metingen.COLUMN_NAME_GEWICHT, gewicht);
+				values.put(Metingen.COLUMN_NAME_DATUM, formatter.format(datum));
 
-	    		// Insert the new row, returning the primary key value of the new row
-	    		db.insert(
-	    				Metingen.TABLE_NAME,
-	    				null,
-	    				values);
+				if (id != 0) {
+					// Which row to update, based on the ID
+					String selection = Metingen._ID + "=?";
+					String[] selectionArgs = { String.valueOf(id) };
+
+					db.update(
+					    Metingen.TABLE_NAME,
+					    values,
+					    selection,
+					    selectionArgs);
+				} else {
+					// Insert the new row, returning the primary key value of the new row
+					db.insert(
+							Metingen.TABLE_NAME,
+							null,
+							values);
+
+				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-    		db.close();
+			db.close();
     		
     		getActivity().finish();
 

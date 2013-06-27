@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.rasing.ikwordgezond"
+    package="me.rasing.mijngewicht"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="me.rasing.ikwordgezond.MainActivity"
+            android:name="me.rasing.mijngewicht.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,11 +23,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="me.rasing.ikwordgezond.MetingenDetailActivity"
+            android:name="me.rasing.mijngewicht.MetingenDetailActivity"
             android:label="@string/title_activity_metingen_detail" >
         </activity>
         <activity
-            android:name="me.rasing.ikwordgezond.MeetingInvoerenActivity"
+            android:name="me.rasing.mijngewicht.MeetingInvoerenActivity"
             android:label="@string/title_activity_meeting_invoeren" >
         </activity>
     </application>

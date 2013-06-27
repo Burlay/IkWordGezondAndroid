@@ -1,14 +1,14 @@
-package me.rasing.ikwordgezond;
+package me.rasing.mijngewicht;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import android.support.v4.app.Fragment;
+import me.rasing.mijngewicht.R;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -113,7 +113,6 @@ public class GeschiedenisFragment extends Fragment {
 			            	i.add(pos.toString());
 			            	// Issue SQL statement.
 			            	db.delete(Metingen.TABLE_NAME, Metingen._ID + "="+Integer.toString(id), null);
-			            	Log.d("test", Integer.toString(id));
 		            	}
 
 		            	// Issue SQL statement.
@@ -157,8 +156,8 @@ public class GeschiedenisFragment extends Fragment {
 					long id) {
 				Cursor c = (Cursor) parent.getItemAtPosition(pos);
 				
-				Intent intent = new Intent(getActivity(), MetingenDetailActivity.class);
-				intent.putExtra(MetingenDetailActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
+				Intent intent = new Intent(getActivity(), MeetingInvoerenActivity.class);
+				intent.putExtra(MeetingInvoerenActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
 				startActivity(intent);
 			}
 

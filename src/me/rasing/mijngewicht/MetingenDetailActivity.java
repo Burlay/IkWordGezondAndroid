@@ -1,15 +1,16 @@
-package me.rasing.ikwordgezond;
+package me.rasing.mijngewicht;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import android.os.Bundle;
+import me.rasing.mijngewicht.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.view.Menu;
 import android.widget.TextView;
 
@@ -35,7 +36,7 @@ public class MetingenDetailActivity extends Activity {
 				Metingen.COLUMN_NAME_DATUM
 		};
 		
-		final String[] values = {Integer.toString(id)};
+		//final String[] values = {Integer.toString(id)};
 
 		// How you want the results sorted in the resulting Cursor
 		//String sortOrder =

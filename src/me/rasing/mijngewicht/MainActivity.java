@@ -1,5 +1,6 @@
-package me.rasing.ikwordgezond;
+package me.rasing.mijngewicht;
 
+import me.rasing.mijngewicht.R;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;

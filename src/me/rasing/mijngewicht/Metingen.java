@@ -1,4 +1,4 @@
-package me.rasing.ikwordgezond;
+package me.rasing.mijngewicht;
 
 import android.provider.BaseColumns;
 

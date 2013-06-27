@@ -1,4 +1,4 @@
-package me.rasing.ikwordgezond;
+package me.rasing.mijngewicht;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import me.rasing.mijngewicht.R;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
