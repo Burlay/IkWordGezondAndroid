@@ -122,4 +122,8 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 		public TextView datum;
 		public TextView gewicht;
 	}
+
+	public void clearSelection() {
+		this.selected_positions.clear();
+	}
 }
