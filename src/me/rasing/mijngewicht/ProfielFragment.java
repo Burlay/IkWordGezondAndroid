@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,8 +41,8 @@ public class ProfielFragment extends Fragment {
     	    null,                 // The values for the WHERE clause
     	    null,                 // don't group the rows
     	    null,                 // don't filter by row groups
-    	    Metingen.COLUMN_NAME_DATUM + " DESC",
-    	    "2"
+    	    null,
+    	    "1"
     	    );
     	
     	View rootView;
@@ -51,8 +50,43 @@ public class ProfielFragment extends Fragment {
     	if ( cursor.getCount() <= 0 ) {
         	rootView = inflater.inflate(R.layout.fragment_blank_state, container, false);
     	} else {
+    		rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
+    	}
+    	
+		db.close();
+
+    	getActivity().setTitle("Profiel");
+
+    	return rootView;
+    }
+    
+    @Override
+	public void onResume() {    	
+		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
+    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
+    	
+    	// Define a projection that specifies which columns from the database
+    	// you will actually use after this query.
+    	String[] projection = {
+    	    Metingen._ID,
+    	    Metingen.COLUMN_NAME_GEWICHT,
+    	    Metingen.COLUMN_NAME_DATUM
+    	    };
+
+    	// Get the 2 most recent weights.
+    	Cursor cursor = db.query(
+    	    Metingen.TABLE_NAME,  // The table to query
+    	    projection,           // The columns to return
+    	    null,                 // The columns for the WHERE clause
+    	    null,                 // The values for the WHERE clause
+    	    null,                 // don't group the rows
+    	    null,                 // don't filter by row groups
+    	    Metingen.COLUMN_NAME_DATUM + " DESC",
+    	    "2"
+    	    );
+    	
+    	if ( cursor.getCount() > 0 ) {
     		cursor.moveToFirst();
-    		Log.d("Column exists", Integer.toString(cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)));
 
     		float weight = cursor.getFloat(
     				cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
@@ -86,30 +120,26 @@ public class ProfielFragment extends Fragment {
 
     		db.close();
 
-    		rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
-
     		// Calculate the total weight lost or gained and display it.
     		float totalLost = weight - startWeight;
 
-    		TextView txtTotalLost = (TextView) rootView.findViewById(R.id.fragmentProfielTotal);
+    		TextView txtTotalLost = (TextView) getActivity().findViewById(R.id.fragmentProfielTotal);
     		txtTotalLost.setText(NumberFormat.getInstance().format(totalLost) + " kg");
 
     		// Display the difference between the 2 most recent weights.
 
-    		TextView txtDifference = (TextView) rootView.findViewById(R.id.fragmentProfielDifference);
+    		TextView txtDifference = (TextView) getActivity().findViewById(R.id.fragmentProfielDifference);
     		txtDifference.setText(NumberFormat.getInstance().format(difference) + " kg");
 
     		// Display the current weight.
-    		TextView txtWeight = (TextView) rootView.findViewById(R.id.gewicht);
+    		TextView txtWeight = (TextView) getActivity().findViewById(R.id.gewicht);
     		txtWeight.setText(NumberFormat.getInstance().format(weight) + " kg");
     	}
+    	
+		super.onResume();
+	}
 
-    	getActivity().setTitle("Profiel");
-
-    	return rootView;
-    }
-    
-    @Override
+	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     	inflater.inflate(R.menu.profiel_menu, menu);
     }
