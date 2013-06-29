@@ -76,7 +76,7 @@ public class GeschiedenisFragment extends Fragment {
 		final ListView listView = (ListView) rootView.findViewById(R.id.geschiedenis);
 		listView.setAdapter(dataAdapter);
 
-		db.close();
+		//db.close();
 		
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
@@ -121,6 +121,7 @@ public class GeschiedenisFragment extends Fragment {
 		                //deleteSelectedItems();
 		                mode.finish(); // Action picked, so close the CAB
 		                
+		                dataAdapter.requery();
 		                dataAdapter.notifyDataSetChanged();
 		                return true;
 		            default:
