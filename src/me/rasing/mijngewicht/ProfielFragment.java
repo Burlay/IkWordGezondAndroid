@@ -99,6 +99,16 @@ public class ProfielFragment extends Fragment {
         		// Save the difference between the 2 most recent weights.
         		cursor.moveToNext();
         		difference = weight - cursor.getFloat(cursor.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT));
+        		
+        		TextView mVorigeWeging = (TextView) getActivity().findViewById(R.id.fragmentProfielPreviousDate);
+        		
+        		if (difference < 0 ) {
+        			mVorigeWeging.setText(R.string.sinds_vorige_afgevallen);
+        		} else if (difference > 0 ) {
+        			mVorigeWeging.setText(R.string.sinds_vorige_aangekomen);
+        		} else {
+        			mVorigeWeging.setText(R.string.sinds_vorige_geen_verschil);
+        		}
     		}
 
     		// Get the first weight so we can calculate the difference since the start.
