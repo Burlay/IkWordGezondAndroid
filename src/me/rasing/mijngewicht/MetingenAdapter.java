@@ -126,7 +126,12 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 	public void clearSelection() {
 		this.selected_positions.clear();
 	}
+	
+	public int count() {
+		return this.selected_positions.size();
+	}
 
+	// TODO reimplement with a Loader.
 	public void requery() {
 		this.c.requery();
 	}

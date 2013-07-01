@@ -86,6 +86,8 @@ public class GeschiedenisFragment extends Fragment {
 		                                          long id, boolean checked) {
 		    	dataAdapter.toggleSelection(position);
 		    	dataAdapter.notifyDataSetChanged();
+		    	
+		    	mode.setTitle(Integer.toString(dataAdapter.count()) + " geselecteerd");
 		    }
 
 		    @Override
