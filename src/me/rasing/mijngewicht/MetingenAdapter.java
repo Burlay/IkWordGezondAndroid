@@ -82,7 +82,7 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 		}
 		
 		if (selected_positions.contains(position)) {
-			inView.setBackgroundColor(Color.rgb(238, 233, 233));
+			inView.setBackgroundColor(Color.rgb(138, 213, 240));
 		} else {
 			inView.setBackgroundColor(Color.rgb(255, 255, 255));
 		}
