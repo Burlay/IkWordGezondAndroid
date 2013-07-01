@@ -14,6 +14,8 @@
     <string name="title_activity_metingen_detail">MetingenDetailActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="totaal_tekst">totaal afgevallen</string>
+    <string name="totaal_tekst_aangekomen">totaal aangekomen</string>
+    <string name="totaal_tekst_geen_verschil">niks aangekomen of afgevallen</string>
     <string name="sinds_vorige_afgevallen">afgevallen sinds vorige weging</string>
     <string name="sinds_vorige_aangekomen">aangekomen sinds vorige weging</string>
     <string name="sinds_vorige_geen_verschil">geen verschil sinds vorige weging</string>

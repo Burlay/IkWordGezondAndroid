@@ -99,16 +99,6 @@ public class ProfielFragment extends Fragment {
         		// Save the difference between the 2 most recent weights.
         		cursor.moveToNext();
         		difference = weight - cursor.getFloat(cursor.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT));
-        		
-        		TextView mVorigeWeging = (TextView) getActivity().findViewById(R.id.fragmentProfielPreviousDate);
-        		
-        		if (difference < 0 ) {
-        			mVorigeWeging.setText(R.string.sinds_vorige_afgevallen);
-        		} else if (difference > 0 ) {
-        			mVorigeWeging.setText(R.string.sinds_vorige_aangekomen);
-        		} else {
-        			mVorigeWeging.setText(R.string.sinds_vorige_geen_verschil);
-        		}
     		}
 
     		// Get the first weight so we can calculate the difference since the start.
@@ -136,10 +126,28 @@ public class ProfielFragment extends Fragment {
     		TextView txtTotalLost = (TextView) getActivity().findViewById(R.id.fragmentProfielTotal);
     		txtTotalLost.setText(NumberFormat.getInstance().format(totalLost) + " kg");
 
+    		TextView mTotaal = (TextView) getActivity().findViewById(R.id.fragmentProfielTotaalText);
+    		if (difference < 0 ) {
+    			mTotaal.setText(R.string.totaal_tekst);
+    		} else if (difference > 0 ) {
+    			mTotaal.setText(R.string.totaal_tekst_aangekomen);
+    		} else {
+    			mTotaal.setText(R.string.totaal_tekst_geen_verschil);
+    		}
+    		
     		// Display the difference between the 2 most recent weights.
 
     		TextView txtDifference = (TextView) getActivity().findViewById(R.id.fragmentProfielDifference);
     		txtDifference.setText(NumberFormat.getInstance().format(difference) + " kg");
+    		
+    		TextView mVorigeWeging = (TextView) getActivity().findViewById(R.id.fragmentProfielPreviousDate);
+    		if (difference < 0 ) {
+    			mVorigeWeging.setText(R.string.sinds_vorige_afgevallen);
+    		} else if (difference > 0 ) {
+    			mVorigeWeging.setText(R.string.sinds_vorige_aangekomen);
+    		} else {
+    			mVorigeWeging.setText(R.string.sinds_vorige_geen_verschil);
+    		}
 
     		// Display the current weight.
     		TextView txtWeight = (TextView) getActivity().findViewById(R.id.gewicht);
