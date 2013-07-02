@@ -21,5 +21,7 @@
     <string name="sinds_vorige_geen_verschil">geen verschil sinds vorige weging</string>
     <string name="huidig_gewicht_tekst">huidig gewicht</string>
     <string name="title_activity_meeting_invoeren">MeetingInvoerenActivity</string>
-
+    <string name="done">Opslaan</string>
+    <string name="discard">Annuleren</string>
+    
 </resources>
