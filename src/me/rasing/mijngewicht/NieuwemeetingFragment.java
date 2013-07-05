@@ -20,6 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -121,12 +122,6 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						// Gets the data repository in write mode
-						DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
-						SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 
 						EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
 						String gewicht = editText.getText().toString();
@@ -137,6 +132,18 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 						TextView editTime = (TextView) getActivity().findViewById(R.id.editTime);
 						String mTijdstip = editTime.getText().toString();
 
+						
+						if (gewicht.length() == 0) {
+							editText.setError("Vul je gewicht in.");
+							return;
+						}
+						
+						// Gets the data repository in write mode
+						DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
+						SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 						try {
 							Date datum = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).parse(mDatum + " " + mTijdstip);
 							DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());

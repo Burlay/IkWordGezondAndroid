@@ -165,8 +165,6 @@ public class GeschiedenisFragment extends Fragment {
 			}
 
 		});
-		
-		db.close();
 
 		super.onResume();
 	}
