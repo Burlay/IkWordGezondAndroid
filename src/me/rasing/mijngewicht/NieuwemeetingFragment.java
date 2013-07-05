@@ -113,9 +113,9 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 
 
 		// Inflate a "Done/Discard" custom action bar view.
-		//LayoutInflater actionBarInflater = (LayoutInflater) getActivity().getActionBar().getThemedContext()
-		//        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		final View customActionBarView = inflater.inflate(
+		LayoutInflater actionBarInflater = (LayoutInflater) getActivity().getActionBar().getThemedContext()
+		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		final View customActionBarView = actionBarInflater.inflate(
 				R.layout.actionbar_custom_view_done_discard, null);
 		customActionBarView.findViewById(R.id.actionbar_done).setOnClickListener(
 				new View.OnClickListener() {
@@ -124,7 +124,6 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 						// Gets the data repository in write mode
 						DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
 						SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
 
 						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
