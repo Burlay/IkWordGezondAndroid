@@ -22,10 +22,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class GeschiedenisFragment extends Fragment {
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		final View rootView = inflater.inflate(R.layout.fragment_geschiedenig, container, false);
+	
+	@Override
+	public void onResume() {
 		final MetingenAdapter dataAdapter;
 
 		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
@@ -73,7 +72,7 @@ public class GeschiedenisFragment extends Fragment {
 				to,
 				0);
 
-		final ListView listView = (ListView) rootView.findViewById(R.id.geschiedenis);
+		final ListView listView = (ListView) getActivity().findViewById(R.id.geschiedenis);
 		listView.setAdapter(dataAdapter);
 
 		//db.close();
@@ -166,7 +165,16 @@ public class GeschiedenisFragment extends Fragment {
 			}
 
 		});
+		
+		db.close();
 
-		return rootView;
+		super.onResume();
+	}
+
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		final View rootView = inflater.inflate(R.layout.fragment_geschiedenig, container, false);
+				return rootView;
 	}
 }
