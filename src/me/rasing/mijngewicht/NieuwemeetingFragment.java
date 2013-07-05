@@ -177,16 +177,17 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 						}
 
 						db.close();
-						
-						getActivity().finish(); // TODO: don't just finish()!
+
+						Intent intent = new Intent(getActivity(), MainActivity.class);
+						startActivity(intent);
 					}
 				});
 		customActionBarView.findViewById(R.id.actionbar_discard).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						// "Discard"
-						getActivity().finish(); // TODO: don't just finish()!
+						Intent intent = new Intent(getActivity(), MainActivity.class);
+						startActivity(intent);
 					}
 				});
 

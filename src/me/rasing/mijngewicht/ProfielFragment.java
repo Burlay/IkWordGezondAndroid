@@ -2,15 +2,11 @@ package me.rasing.mijngewicht;
 
 import java.text.NumberFormat;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,42 +16,7 @@ public class ProfielFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-    	setHasOptionsMenu(true);
-    	
-		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
-    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-    	
-    	// Define a projection that specifies which columns from the database
-    	// you will actually use after this query.
-    	String[] projection = {
-    	    Metingen._ID,
-    	    Metingen.COLUMN_NAME_GEWICHT,
-    	    Metingen.COLUMN_NAME_DATUM
-    	    };
-
-    	// Get the 2 most recent weights.
-    	Cursor cursor = db.query(
-    	    Metingen.TABLE_NAME,  // The table to query
-    	    projection,           // The columns to return
-    	    null,                 // The columns for the WHERE clause
-    	    null,                 // The values for the WHERE clause
-    	    null,                 // don't group the rows
-    	    null,                 // don't filter by row groups
-    	    null,
-    	    "1"
-    	    );
-    	
-    	View rootView;
-    	
-    	if ( cursor.getCount() <= 0 ) {
-        	rootView = inflater.inflate(R.layout.fragment_blank_state, container, false);
-    	} else {
-    		rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
-    	}
-    	
-		db.close();
-
-    	getActivity().setTitle("Profiel");
+    	View rootView = inflater.inflate(R.layout.fragment_profiel, container, false);
 
     	return rootView;
     }
@@ -84,7 +45,7 @@ public class ProfielFragment extends Fragment {
     	    Metingen.COLUMN_NAME_DATUM + " DESC",
     	    "2"
     	    );
-    	
+
     	if ( cursor.getCount() > 0 ) {
     		cursor.moveToFirst();
 
@@ -156,23 +117,4 @@ public class ProfielFragment extends Fragment {
     	
 		super.onResume();
 	}
-
-	@Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    	inflater.inflate(R.menu.profiel_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	// handle item selection
-    	switch (item.getItemId()) {
-    	case R.id.actie_nieuw:
-			Intent intent = new Intent(getActivity(), MeetingInvoerenActivity.class);
-			startActivity(intent);
-			
-    		return true;
-    	default:
-    		return super.onOptionsItemSelected(item);
-    	}
-    }
 }
