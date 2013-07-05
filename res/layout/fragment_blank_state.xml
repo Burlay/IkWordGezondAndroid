@@ -2,12 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp" >
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Klik op de + om je eerste weeging toe te voegen." />
+        android:gravity="center_horizontal"
+        android:text="Klik op de + om je eerste weeging toe te voegen."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="32sp" />
 
 </LinearLayout>
