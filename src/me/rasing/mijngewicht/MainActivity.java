@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,7 +26,7 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 
 		setContentView(R.layout.activity_main);
 		setTitle("Profiel");
-		
+
 		// Set up the action bar to show a dropdown list.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -33,12 +35,18 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		// Set up the dropdown list navigation in the action bar.
 		actionBar.setListNavigationCallbacks(
 		// Specify a SpinnerAdapter to populate the dropdown list.
-				new ArrayAdapter<String>(getActionBarThemedContextCompat(),
-						android.R.layout.simple_list_item_1,
-						android.R.id.text1, new String[] {
-								getString(R.string.profiel),
-								getString(R.string.geschiedenis)}),
-						this);
+		new ArrayAdapter<String>(getActionBarThemedContextCompat(),
+				android.R.layout.simple_list_item_1,
+				android.R.id.text1, new String[] {
+						getString(R.string.profiel),
+						getString(R.string.geschiedenis)}),
+				this);
+		
+		// Load the correct fragment on orientation change.
+		if(savedInstanceState != null) {
+            int index = savedInstanceState.getInt("index");
+            actionBar.setSelectedNavigationItem(index);
+        }
 	}
 
 	/**
@@ -78,6 +86,8 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 	@Override
 	public boolean onNavigationItemSelected(int pos, long id) {
 		Fragment fragment = null;
+		String tag = "";
+		
 		switch (pos) {
 			case 0:
 				DbHelper mDbHelper = new DbHelper(getBaseContext());
@@ -105,20 +115,32 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		    	
 		    	if ( cursor.getCount() <= 0 ) {
 					fragment = new BlankstateFragment();
+					tag = "BlankState";
 		    	} else {
 					fragment = new ProfielFragment();
+					tag = "Profiel";
 		    	}
 		    	
 				db.close();
 				break;
 			case 1:
 				fragment = new GeschiedenisFragment();
+				tag = "Geschiedenis";
 		}
 		
 		getSupportFragmentManager()
 			.beginTransaction()
-			.replace(R.id.container, fragment)
+			.replace(R.id.container, fragment, tag)
 			.commit();
 		return false;
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		// Save the selected item in the dropdown navigation.
+		int i = getActionBar().getSelectedNavigationIndex();
+	    outState.putInt("index", i);
 	}
 }
