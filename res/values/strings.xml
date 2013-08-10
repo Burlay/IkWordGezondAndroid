@@ -23,5 +23,6 @@
     <string name="title_activity_meeting_invoeren">MeetingInvoerenActivity</string>
     <string name="done">Opslaan</string>
     <string name="discard">Annuleren</string>
+    <string name="grafiek">Grafiek</string>
     
 </resources>
