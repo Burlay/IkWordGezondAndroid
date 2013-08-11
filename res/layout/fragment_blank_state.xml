@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Klik op de + om je eerste weeging toe te voegen."
+        android:text="Klik op de + om je eerste weging toe te voegen."
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="32sp" />
 

@@ -2,8 +2,9 @@ package me.rasing.mijngewicht;
 
 import java.text.NumberFormat;
 
+import me.rasing.mijngewicht.providers.GewichtProvider;
+import android.content.ContentResolver;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,10 +23,7 @@ public class ProfielFragment extends Fragment {
     }
     
     @Override
-	public void onResume() {    	
-		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
-    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-    	
+	public void onResume() {
     	// Define a projection that specifies which columns from the database
     	// you will actually use after this query.
     	String[] projection = {
@@ -34,17 +32,14 @@ public class ProfielFragment extends Fragment {
     	    Metingen.COLUMN_NAME_DATUM
     	    };
 
-    	// Get the 2 most recent weights.
-    	Cursor cursor = db.query(
-    	    Metingen.TABLE_NAME,  // The table to query
-    	    projection,           // The columns to return
-    	    null,                 // The columns for the WHERE clause
-    	    null,                 // The values for the WHERE clause
-    	    null,                 // don't group the rows
-    	    null,                 // don't filter by row groups
-    	    Metingen.COLUMN_NAME_DATUM + " DESC",
-    	    "2"
-    	    );
+    	ContentResolver mContentResolver = getActivity().getContentResolver();
+    	Cursor cursor = mContentResolver.query(
+    			GewichtProvider.METINGEN_URI,
+    			projection,
+    			null,
+    			null,
+    			Metingen.COLUMN_NAME_DATUM + " DESC"
+    			);
 
     	if ( cursor.getCount() > 0 ) {
     		cursor.moveToFirst();
@@ -61,25 +56,13 @@ public class ProfielFragment extends Fragment {
         		cursor.moveToNext();
         		difference = weight - cursor.getFloat(cursor.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT));
     		}
-
-    		// Get the first weight so we can calculate the difference since the start.
-    		cursor = db.query(
-    				Metingen.TABLE_NAME,  // The table to query
-    				projection,           // The columns to return
-    				null,                 // The columns for the WHERE clause
-    				null,                 // The values for the WHERE clause
-    				null,                 // don't group the rows
-    				null,                 // don't filter by row groups
-    				Metingen.COLUMN_NAME_DATUM + " ASC",
-    				"1"
-    				);
-
-    		cursor.moveToFirst();
+    		
+    		cursor.moveToLast();
     		float startWeight = cursor.getFloat(
     				cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
     				);
-
-    		db.close();
+    		
+    		cursor.close();
 
     		// Calculate the total weight lost or gained and display it.
     		float totalLost = weight - startWeight;

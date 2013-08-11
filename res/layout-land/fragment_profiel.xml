@@ -9,16 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="0sp"
         android:layout_weight="1" >
-       	
-	    <TextView
-	        android:id="@+id/fragmentProfielDifference"
-	        android:layout_width="0sp"
-	        android:layout_height="fill_parent"
-	        android:layout_weight="1"
-	        android:gravity="bottom|center_horizontal"
-	        android:text="Hello World"
-	        android:textAppearance="?android:attr/textAppearanceLarge"
-	        android:textSize="36sp" />
 	
 	    <TextView
 	        android:id="@+id/fragmentProfielTotal"
@@ -27,6 +17,16 @@
 	        android:layout_weight="1"
 	        android:gravity="bottom|center_horizontal"
 	        android:text="Large Text"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:textSize="36sp" />
+       	
+	    <TextView
+	        android:id="@+id/fragmentProfielDifference"
+	        android:layout_width="0sp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:gravity="bottom|center_horizontal"
+	        android:text="Hello World"
 	        android:textAppearance="?android:attr/textAppearanceLarge"
 	        android:textSize="36sp" />
 	
