@@ -31,6 +31,6 @@
             android:label="@string/title_activity_meeting_invoeren"
           	android:noHistory="true" >
         </activity>
+		<provider android:name="me.rasing.mijngewicht.providers.GewichtProvider" android:authorities="me.rasing.mijngewicht.providers.GewichtProvider" />
     </application>
-
 </manifest>
