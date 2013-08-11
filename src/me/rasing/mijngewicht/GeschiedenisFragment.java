@@ -3,7 +3,6 @@ package me.rasing.mijngewicht;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import me.rasing.mijngewicht.R;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,12 +22,21 @@ import android.widget.ListView;
 
 public class GeschiedenisFragment extends Fragment {
 	
+	private MetingenAdapter dataAdapter;
+	private SQLiteDatabase db;
+	private DbHelper mDbHelper;
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		db.close();
+	}
+
 	@Override
 	public void onResume() {
-		final MetingenAdapter dataAdapter;
-
-		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		mDbHelper = new DbHelper(getActivity().getBaseContext());
+		db = mDbHelper.getWritableDatabase();
 
 		// Define a projection that specifies which columns from the database
 		// you will actually use after this query.

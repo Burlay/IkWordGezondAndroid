@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:shrinkColumns="*"
+    android:stretchColumns="*" >
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="1" >
+       	
+	    <TextView
+	        android:id="@+id/fragmentProfielDifference"
+	        android:layout_width="0sp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:gravity="bottom|center_horizontal"
+	        android:text="Hello World"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:textSize="36sp" />
+	
+	    <TextView
+	        android:id="@+id/fragmentProfielTotal"
+	        android:layout_width="0sp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:gravity="bottom|center_horizontal"
+	        android:text="Large Text"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:textSize="36sp" />
+	
+	    <TextView
+	        android:id="@+id/gewicht"
+	        android:layout_width="0sp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:gravity="bottom|center_horizontal"
+	        android:text="Large Text"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:textSize="36sp" />
+
+    </TableRow>
+    
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="1" >
+	    
+	    <TextView
+	        android:id="@+id/fragmentProfielTotaalText"
+	        android:layout_width="0sp"
+       		android:layout_weight = "1"
+	        android:layout_height="fill_parent"
+        	android:gravity="top|center_horizontal"
+	        android:text="@string/totaal_tekst"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	    <TextView
+	        android:id="@+id/fragmentProfielPreviousDate"
+	        android:layout_width="0sp"
+       		android:layout_weight = "1"
+	        android:layout_height="fill_parent"
+        	android:gravity="top|center_horizontal"
+	        android:text="Small Text"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	    <TextView
+	        android:id="@+id/datum"
+	        android:layout_width="0sp"
+       		android:layout_weight = "1"
+	        android:layout_height="fill_parent"
+	        android:gravity="top|center_horizontal"
+	        android:text="@string/huidig_gewicht_tekst"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </TableRow>
+    
+</TableLayout>
