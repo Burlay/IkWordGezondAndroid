@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import me.rasing.mijngewicht.R;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -41,6 +40,13 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 		}
 	}
 	
+	@Override
+	public Cursor swapCursor(Cursor c) {
+		super.swapCursor(c);
+	    this.c = c;
+		return this.c;
+	}
+
 	public View getView(final int position, View inView, ViewGroup parent) {
 		MetingenHolder holder = null;
 		
@@ -87,29 +93,6 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 			inView.setBackgroundColor(Color.rgb(255, 255, 255));
 		}
 		
-		//final CheckBox cBox = (CheckBox) inView.findViewById(R.id.bcheck); // your
-		// CheckBox
-		//cBox.setOnClickListener(new OnClickListener() {
-
-//			public void onClick(View v) {
-//
-//				CheckBox cb = (CheckBox) v.findViewById(R.id.your_checkbox_id);
-//
-//				if (cb.isChecked()) {
-//					itemChecked.set(pos, true);
-//					// do some operations here
-//				} else if (!cb.isChecked()) {
-//					itemChecked.set(pos, false);
-//					// do some operations here
-//				}
-//			}
-//		});
-		//cBox.setChecked(itemChecked.get(pos)); // this will Check or Uncheck the
-		// CheckBox in ListView
-		// according to their original
-		// position and CheckBox never
-		// loss his State when you
-		// Scroll the List Items.
 		return inView;
 	}
 	
@@ -129,10 +112,5 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 	
 	public int count() {
 		return this.selected_positions.size();
-	}
-
-	// TODO reimplement with a Loader.
-	public void requery() {
-		this.c.requery();
 	}
 }

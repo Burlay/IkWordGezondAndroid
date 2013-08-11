@@ -13,8 +13,7 @@ import android.util.Log;
 
 public class GewichtProvider extends ContentProvider {
 	private static final String AUTHORITY = "me.rasing.mijngewicht.providers.GewichtProvider";
-	public static final Uri METINGEN_URI = Uri.parse("content://" + AUTHORITY
-	        + "/" + Metingen.TABLE_NAME);
+	public static final Uri METINGEN_URI = Uri.parse("content://" + AUTHORITY + "/" + Metingen.TABLE_NAME);
 	private static DbHelper mDbHelper;
 	private static final UriMatcher sUriMatcher;
 	private static final int METINGEN = 0;
@@ -29,9 +28,27 @@ public class GewichtProvider extends ContentProvider {
 	}
 	
 	@Override
-	public int delete(Uri arg0, String arg1, String[] arg2) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete(Uri uri, String where, String[] selectionArgs) {
+		SQLiteDatabase db;
+		int delCount = 0;
+		
+		switch (sUriMatcher.match(uri)) {
+			case METINGEN:
+				Log.d("case", "Metingen");
+				break;
+			case METINGEN_ID:
+				String id = uri.getLastPathSegment();
+				db = mDbHelper.getWritableDatabase();
+				delCount = db.delete(Metingen.TABLE_NAME, Metingen._ID + "="+id, null);
+				break;
+			default:
+				Log.d("case", "not found");
+		}
+	   // notify all listeners of changes:
+	   if (delCount > 0) {
+	      getContext().getContentResolver().notifyChange(uri, null);
+	   }
+	   return delCount;
 	}
 
 	@Override
@@ -65,6 +82,7 @@ public class GewichtProvider extends ContentProvider {
 		
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 		Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+		Log.d("Number of records", Integer.toString(c.getCount()));
 		
 		c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;

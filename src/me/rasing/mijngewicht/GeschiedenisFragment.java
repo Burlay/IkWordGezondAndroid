@@ -3,11 +3,18 @@ package me.rasing.mijngewicht;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import me.rasing.mijngewicht.providers.GewichtProvider;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,45 +27,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class GeschiedenisFragment extends Fragment {
-	
-	private MetingenAdapter dataAdapter;
-	private SQLiteDatabase db;
-	private DbHelper mDbHelper;
+public class GeschiedenisFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, MultiChoiceModeListener {
+	private MetingenAdapter mAdapter;
+	private CursorLoader cursorLoader;
+	private ListView listView;
+	private LoaderManager loadermanager;
 
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		db.close();
-	}
-
-	@Override
-	public void onResume() {
-		mDbHelper = new DbHelper(getActivity().getBaseContext());
-		db = mDbHelper.getWritableDatabase();
-
-		// Define a projection that specifies which columns from the database
-		// you will actually use after this query.
-		String[] projection = {
-				Metingen._ID,
-				Metingen.COLUMN_NAME_GEWICHT,
-				Metingen.COLUMN_NAME_DATUM
-		};
-
-		// How you want the results sorted in the resulting Cursor
-		//String sortOrder =
-		//    FeedReaderContract.FeedEntry.COLUMN_NAME_UPDATED + " DESC";
-
-		Cursor cursor = db.query(
-				Metingen.TABLE_NAME,  // The table to query
-				projection,           // The columns to return
-				null,                 // The columns for the WHERE clause
-				null,                 // The values for the WHERE clause
-				null,                 // don't group the rows
-				null,                 // don't filter by row groups
-				Metingen.COLUMN_NAME_DATUM + " DESC"
-				);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		final View rootView = inflater.inflate(R.layout.fragment_geschiedenig, container, false);
+		
+		loadermanager = getLoaderManager();
+		loadermanager.initLoader(1, null, this);
 
 		// The desired columns to be bound
 		String[] columns = new String[] {
@@ -70,96 +50,21 @@ public class GeschiedenisFragment extends Fragment {
 				R.id.gewicht,
 				R.id.datum,
 		};
-
+		
 		// create the adapter using the cursor pointing to the desired data
 		//as well as the layout information
-		dataAdapter = new MetingenAdapter(
+		mAdapter = new MetingenAdapter(
 				getActivity(), R.layout.geschiedenis_list_item,
-				cursor,
+				null,
 				columns,
 				to,
 				0);
 
-		final ListView listView = (ListView) getActivity().findViewById(R.id.geschiedenis);
-		listView.setAdapter(dataAdapter);
-
-		//db.close();
+		listView = (ListView) rootView.findViewById(R.id.geschiedenis);
+		listView.setAdapter(mAdapter);
 		
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
-
-		    @Override
-		    public void onItemCheckedStateChanged(ActionMode mode, int position,
-		                                          long id, boolean checked) {
-		    	dataAdapter.toggleSelection(position);
-		    	dataAdapter.notifyDataSetChanged();
-		    	
-		    	mode.setTitle(Integer.toString(dataAdapter.count()) + " geselecteerd");
-		    }
-
-		    @Override
-		    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-		        // Respond to clicks on the actions in the CAB
-		        switch (item.getItemId()) {
-		            case R.id.actie_delete:
-		        		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
-		            	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-		            	// Define 'where' part of query.
-		            	//String selection = Metingen._ID + "=";
-		            	// Specify arguments in placeholder order.
-		            	
-		            	ArrayList<Integer> selected_positions = dataAdapter.getSelectedPositions();
-		            	
-		            	//String[] selectionArgs = new String[selected_positions.size()];
-		            	ArrayList<String> i = new ArrayList<String>();
-		            	
-		            	Iterator<Integer> iterator = selected_positions.iterator();
-		            	while (iterator.hasNext()) {
-		            		Integer pos = iterator.next();
-			            	Cursor c = (Cursor) listView.getItemAtPosition(pos);
-			            	int id = c.getInt(c.getColumnIndex("_id"));
-			            	i.add(pos.toString());
-			            	// Issue SQL statement.
-			            	db.delete(Metingen.TABLE_NAME, Metingen._ID + "="+Integer.toString(id), null);
-		            	}
-
-		            	// Issue SQL statement.
-		            	//db.delete(Metingen.TABLE_NAME, selection, i.toArray(selectionArgs));
-		            	
-		                //deleteSelectedItems();
-		                mode.finish(); // Action picked, so close the CAB
-		                
-		                dataAdapter.requery();
-		                dataAdapter.notifyDataSetChanged();
-		                return true;
-		            default:
-		                return false;
-		        }
-		    }
-
-		    @Override
-		    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-		        // Inflate the menu for the CAB
-		        MenuInflater inflater = mode.getMenuInflater();
-		        inflater.inflate(R.menu.cab_geschiedenis, menu);
-		        return true;
-		    }
-
-		    @Override
-		    public void onDestroyActionMode(ActionMode mode) {
-		        // Here you can make any necessary updates to the activity when
-		        // the CAB is removed. By default, selected items are deselected/unchecked.
-		    	dataAdapter.clearSelection();
-		    }
-
-		    @Override
-		    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-		        // Here you can perform updates to the CAB due to
-		        // an invalidate() request
-		        return false;
-		    }
-		});
+		listView.setMultiChoiceModeListener(this);
 		
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -173,14 +78,105 @@ public class GeschiedenisFragment extends Fragment {
 			}
 
 		});
-
-		super.onResume();
+	   
+		return rootView;
 	}
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		final View rootView = inflater.inflate(R.layout.fragment_geschiedenig, container, false);
-				return rootView;
+	@Override
+	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		// Define a projection that specifies which columns from the database
+		// you will actually use after this query.
+		String[] projection = {
+				Metingen._ID,
+				Metingen.COLUMN_NAME_GEWICHT,
+				Metingen.COLUMN_NAME_DATUM
+		};
+		
+		cursorLoader = new CursorLoader(getActivity(), GewichtProvider.METINGEN_URI , projection, null, null, null);
+		return cursorLoader;
 	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		if(mAdapter!=null && cursor!=null) {
+			mAdapter.swapCursor(cursor); //swap the new cursor in.
+		} else {
+			Log.v("Hello World","OnLoadFinished: mAdapter is null");
+		}
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		if(mAdapter!=null)
+			mAdapter.swapCursor(null);
+		else
+			Log.v("Hello World","OnLoadFinished: mAdapter is null");
+	}
+
+	@Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        // Respond to clicks on the actions in the CAB
+        switch (item.getItemId()) {
+            case R.id.actie_delete:
+        		DbHelper mDbHelper = new DbHelper(getActivity().getBaseContext());
+            	SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            	
+            	ArrayList<Integer> selected_positions = mAdapter.getSelectedPositions();
+            	//ArrayList<String> i = new ArrayList<String>();
+            	ContentResolver mContentResolver = getActivity().getContentResolver();
+            	
+            	Iterator<Integer> iterator = selected_positions.iterator();
+            	while (iterator.hasNext()) {
+            		Integer pos = iterator.next();
+	            	Cursor c = (Cursor) listView.getItemAtPosition(pos);
+	            	int id = c.getInt(c.getColumnIndex("_id"));
+	            	//i.add(pos.toString());
+	            	// Issue SQL statement.
+	            	Uri uri = Uri.withAppendedPath(GewichtProvider.METINGEN_URI, "/" + Integer.toString(id));
+	            	mContentResolver.delete(uri, Metingen._ID + "="+Integer.toString(id), null);
+	            	//db.delete(Metingen.TABLE_NAME, Metingen._ID + "="+Integer.toString(id), null);
+            	}
+
+            	db.close();
+                
+                mode.finish(); // Action picked, so close the CAB
+                
+                //mAdapter.requery();
+                mAdapter.notifyDataSetChanged();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        // Inflate the menu for the CAB
+        MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.cab_geschiedenis, menu);
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        // Here you can make any necessary updates to the activity when
+        // the CAB is removed. By default, selected items are deselected/unchecked.
+    	mAdapter.clearSelection();
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        // Here you can perform updates to the CAB due to
+        // an invalidate() request
+        return false;
+    }
+
+	@Override
+    public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                          long id, boolean checked) {
+    	mAdapter.toggleSelection(position);
+    	mAdapter.notifyDataSetChanged();
+    	
+    	mode.setTitle(Integer.toString(mAdapter.count()) + " geselecteerd");
+    }
 }
