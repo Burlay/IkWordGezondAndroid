@@ -22,6 +22,7 @@ public class ProfielFragment extends Fragment {
     	return rootView;
     }
     
+    // TODO Move database access of the UI thread
     @Override
 	public void onResume() {
     	// Define a projection that specifies which columns from the database
