@@ -1,6 +1,12 @@
 package me.rasing.mijngewicht;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
+import me.rasing.mijngewicht.providers.GewichtProvider;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -11,10 +17,13 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer.FillOutsideLine;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,13 +48,39 @@ public class GrafiekFragment extends Fragment {
     }
     
     private void drawChart() {
+    	// Define a projection that specifies which columns from the database
+    	// you will actually use after this query.
+    	String[] projection = {
+    	    Metingen._ID,
+    	    Metingen.COLUMN_NAME_GEWICHT,
+    	    Metingen.COLUMN_NAME_DATUM
+    	    };
 
-    	int[] y = { 30, 34, 35, 57, 77, 89, 100, 111, 123, 145 };
-    	
-    	long value = new Date().getTime() - 3 * TimeChart.DAY;
+    	ContentResolver mContentResolver = getActivity().getContentResolver();
+    	Cursor cursor = mContentResolver.query(
+    			GewichtProvider.METINGEN_URI,
+    			projection,
+    			null,
+    			null,
+    			Metingen.COLUMN_NAME_DATUM + " ASC"
+    			);
+
     	TimeSeries series = new TimeSeries("Line1");
-    	for (int i = 0; i < y.length; i++) {
-    		series.add(new Date(value + i * TimeChart.DAY / 4), y[i]);
+    	
+    	while (cursor.moveToNext()) {
+    		float weight = cursor.getFloat(cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT));
+    		String datum = cursor.getString(cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
+    		
+			SimpleDateFormat format = 
+					new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+			
+    		try {
+				Date date = format.parse(datum);
+				series.add(date, weight);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
     	
     	XYMultipleSeriesDataset dataset= new XYMultipleSeriesDataset();
@@ -69,16 +104,19 @@ public class GrafiekFragment extends Fragment {
 	    mRenderer.setShowAxes(false);
 	    
 	    mRenderer.setAntialiasing(true);
-	    
+
 	    mRenderer.setAxesColor(Color.GRAY);
 	    mRenderer.setXLabelsColor(Color.BLACK);
+	    mRenderer.setXLabelsAlign(Align.LEFT);
 	    mRenderer.setXLabelsPadding(-35);
 	    
 	    mRenderer.setYLabelsColor(0, Color.BLACK);
 	    mRenderer.setYLabelsAlign(Align.LEFT);
+	    mRenderer.setYLabelsPadding(-8);
+	    mRenderer.setYLabelsVerticalPadding(8);
 	    mRenderer.setLabelsTextSize(20);
 	    
-	    int[] margins = { 0, 0, -38, 0 };
+	    int[] margins = { 16, -1, -38, 0 };
 	    mRenderer.setMargins(margins);
 	    
 	    mRenderer.setShowGrid(true);
@@ -87,20 +125,11 @@ public class GrafiekFragment extends Fragment {
     	mRenderer.setBackgroundColor(Color.WHITE); // TODO use color from theme
     	mRenderer.setMarginsColor(Color.WHITE); // TODO use color from theme
     	
-	    GraphicalView chartView;
-		/*if (chartView != null) {
-			chartView.repaint();
-		}
-		else { */
-	    	//Log.d("datum", new Date(now - (HOURS - j) * HOUR).toString());
-			//chartView = ChartFactory.getLineChartView(getActivity(), dataset, mRenderer);
-			chartView = ChartFactory.getTimeChartView(getActivity(), dataset, mRenderer, "H:mm:ss");
-		//}
-
+	    GraphicalView chartView = ChartFactory.getTimeChartView(getActivity(), dataset, mRenderer, "dd MMM");
 
 	    LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.dashboard_chart_layout);	    
 	    //layout.removeAllViews();
-	    layout.addView(chartView, new LayoutParams(960,
+	    layout.addView(chartView, new LayoutParams(LayoutParams.MATCH_PARENT,
 	              LayoutParams.MATCH_PARENT));
     }
 }

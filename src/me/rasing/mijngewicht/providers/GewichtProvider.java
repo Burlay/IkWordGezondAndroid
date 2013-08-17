@@ -21,7 +21,6 @@ public class GewichtProvider extends ContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-		Log.d(this.getClass().toString(), "onCreate");
 		mDbHelper = new DbHelper(getContext());
 		
 		return true;
@@ -34,15 +33,12 @@ public class GewichtProvider extends ContentProvider {
 		
 		switch (sUriMatcher.match(uri)) {
 			case METINGEN:
-				Log.d("case", "Metingen");
 				break;
 			case METINGEN_ID:
 				String id = uri.getLastPathSegment();
 				db = mDbHelper.getWritableDatabase();
 				delCount = db.delete(Metingen.TABLE_NAME, Metingen._ID + "="+id, null);
 				break;
-			default:
-				Log.d("case", "not found");
 		}
 	   // notify all listeners of changes:
 	   if (delCount > 0) {
@@ -66,7 +62,6 @@ public class GewichtProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
 			String sortOrder) {
-		Log.d("URI", uri.toString());
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		qb.setTables(Metingen.TABLE_NAME);
 		
@@ -82,7 +77,6 @@ public class GewichtProvider extends ContentProvider {
 		
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 		Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-		Log.d("Number of records", Integer.toString(c.getCount()));
 		
 		c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;
