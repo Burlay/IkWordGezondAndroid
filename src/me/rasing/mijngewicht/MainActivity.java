@@ -37,7 +37,8 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 				android.R.layout.simple_list_item_1,
 				android.R.id.text1, new String[] {
 						getString(R.string.profiel),
-						getString(R.string.geschiedenis)}),
+						getString(R.string.geschiedenis),
+						getString(R.string.grafiek)}),
 				this);
 		
 		// Load the correct fragment on orientation change.

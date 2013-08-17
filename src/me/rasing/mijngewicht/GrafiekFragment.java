@@ -1,12 +1,15 @@
 package me.rasing.mijngewicht;
 
+import java.util.Date;
+
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
+import org.achartengine.chart.TimeChart;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYValueSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer.FillOutsideLine;
 
 import android.graphics.Color;
 import android.graphics.Paint.Align;
@@ -36,50 +39,13 @@ public class GrafiekFragment extends Fragment {
     }
     
     private void drawChart() {
-//	    XYMultipleSeriesDataset series = new XYMultipleSeriesDataset();
-//	    XYValueSeries newTicketSeries = new XYValueSeries("New Tickets");
-//	    newTicketSeries.add(1, 2, 14);
-//	    newTicketSeries.add(2, 2, 12);
-//	    newTicketSeries.add(3, 2, 18);
-//	    newTicketSeries.add(4, 2, 5);
-//	    newTicketSeries.add(5, 2, 1);
-//	    series.addSeries(newTicketSeries);
-//	    XYValueSeries fixedTicketSeries = new XYValueSeries("Fixed Tickets");
-//	    fixedTicketSeries.add(1, 1, 7);
-//	    fixedTicketSeries.add(2, 1, 4);
-//	    fixedTicketSeries.add(3, 1, 18);
-//	    fixedTicketSeries.add(4, 1, 3);
-//	    fixedTicketSeries.add(5, 1, 1);
-//	    series.addSeries(fixedTicketSeries);
-//
-//	    XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-//	    renderer.setAxisTitleTextSize(16);
-//	    renderer.setChartTitleTextSize(20);
-//	    renderer.setLabelsTextSize(15);
-//	    renderer.setRange(new double[]{0, 6, 0, 6});
-//
-//	    //renderer.setMargins(new int[] { 20, 30, 15, 0 });
-//	    XYSeriesRenderer newTicketRenderer = new XYSeriesRenderer();
-//	    newTicketRenderer.setColor(Color.BLUE);
-//	    renderer.addSeriesRenderer(newTicketRenderer);
-//	    XYSeriesRenderer fixedTicketRenderer = new XYSeriesRenderer();
-//	    fixedTicketRenderer.setColor(Color.GREEN);
-//	    renderer.addSeriesRenderer(fixedTicketRenderer);
-//
-//	    renderer.setXLabels(0);
-//	    renderer.setYLabels(0);
-//	    renderer.setDisplayChartValues(false);
-//	    renderer.setShowGrid(false);
-//	    renderer.setShowLegend(false);
-//	    renderer.setShowLabels(true);
 
-
-    	int[] x= { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     	int[] y = { 30, 34, 35, 57, 77, 89, 100, 111, 123, 145 };
     	
+    	long value = new Date().getTime() - 3 * TimeChart.DAY;
     	TimeSeries series = new TimeSeries("Line1");
-    	for (int i = 0; i < x.length; i++) {
-    		series.add(x[i], y[i]);
+    	for (int i = 0; i < y.length; i++) {
+    		series.add(new Date(value + i * TimeChart.DAY / 4), y[i]);
     	}
     	
     	XYMultipleSeriesDataset dataset= new XYMultipleSeriesDataset();
@@ -87,12 +53,11 @@ public class GrafiekFragment extends Fragment {
     	
     	XYSeriesRenderer renderer = new XYSeriesRenderer();
     	renderer.setLineWidth(1);
-    	renderer.setColor(Color.GREEN); // TODO use theming
-    	renderer.setFillBelowLine(true);
-    	renderer.setFillBelowLineColor(Color.GREEN); // TODO use theming
-    	//renderer.setDisplayChartValues(true);
-    	//renderer.setChartValuesTextSize(25);
-    	//renderer.setChartValuesSpacing(25);
+    	//renderer.setColor(Color.GREEN); // TODO use theming
+    	
+    	FillOutsideLine outsideFill = new FillOutsideLine(FillOutsideLine.Type.BOUNDS_ALL);
+    	//outsideFill.setColor(Color.GREEN);
+    	renderer.addFillOutsideLine(outsideFill);
     	
     	XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
     	mRenderer.addSeriesRenderer(renderer);
@@ -102,7 +67,6 @@ public class GrafiekFragment extends Fragment {
 	    
 	    mRenderer.setShowLegend(false);
 	    mRenderer.setShowAxes(false);
-	    //mRenderer.setShowLabels(false);
 	    
 	    mRenderer.setAntialiasing(true);
 	    
@@ -128,13 +92,15 @@ public class GrafiekFragment extends Fragment {
 			chartView.repaint();
 		}
 		else { */
-			chartView = ChartFactory.getLineChartView(getActivity(), dataset, mRenderer);
+	    	//Log.d("datum", new Date(now - (HOURS - j) * HOUR).toString());
+			//chartView = ChartFactory.getLineChartView(getActivity(), dataset, mRenderer);
+			chartView = ChartFactory.getTimeChartView(getActivity(), dataset, mRenderer, "H:mm:ss");
 		//}
 
 
 	    LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.dashboard_chart_layout);	    
 	    //layout.removeAllViews();
 	    layout.addView(chartView, new LayoutParams(960,
-	              LayoutParams.FILL_PARENT));
+	              LayoutParams.MATCH_PARENT));
     }
 }
