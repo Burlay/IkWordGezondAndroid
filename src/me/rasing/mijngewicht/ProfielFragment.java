@@ -45,9 +45,7 @@ public class ProfielFragment extends Fragment {
     	if ( cursor.getCount() > 0 ) {
     		cursor.moveToFirst();
 
-    		float weight = cursor.getFloat(
-    				cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
-    				);
+    		float weight = cursor.getFloat( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
 
     		float difference; 
     		if ( cursor.getCount() == 1 ) {

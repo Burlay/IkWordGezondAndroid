@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.rasing.mijngewicht"
-    android:versionCode="4"
-    android:versionName="1.3" >
+    android:versionCode="6"
+    android:versionName="1.5" >
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
 
     <application
         android:allowBackup="true"
@@ -28,8 +28,7 @@
         </activity>
         <activity
             android:name="me.rasing.mijngewicht.MeetingInvoerenActivity"
-            android:label="@string/title_activity_meeting_invoeren"
-          	android:noHistory="true" >
+            android:label="@string/title_activity_meeting_invoeren" >
         </activity>
 		<provider android:name="me.rasing.mijngewicht.providers.GewichtProvider" android:authorities="me.rasing.mijngewicht.providers.GewichtProvider" />
     </application>

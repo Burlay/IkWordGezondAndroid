@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -30,14 +31,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-public class NieuwemeetingFragment extends Fragment implements OnClickListener{
+public class NieuwemeetingFragment extends Fragment implements OnClickListener {
+	//private static final int TTS_DATA_CHECK = 0;
 	private int id = 0;
+	private TextToSpeech tts;
+	protected boolean ttsIsInit;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_nieuwemeeting, container, false);
 
+		//initTextToSpeech();
+		
 		TextView editDate = (TextView) rootView.findViewById(R.id.editDate);
 		editDate.setOnClickListener(this);
 		TextView editTime = (TextView) rootView.findViewById(R.id.editTime);
@@ -121,7 +127,10 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
+						if (tts != null && ttsIsInit){
+							tts.speak("150 kilograms", TextToSpeech.QUEUE_ADD, null);
+						}
+						
 						EditText editText = (EditText) getActivity().findViewById(R.id.gewicht);
 						String gewicht = editText.getText().toString();
 
@@ -205,6 +214,30 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 		return rootView;
 	}
 
+//	private void initTextToSpeech() {
+//		Intent intent = new Intent(Engine.ACTION_CHECK_TTS_DATA);
+//		startActivityForResult(intent, TTS_DATA_CHECK);
+//	}
+//
+//	@Override
+//	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		super.onActivityResult(requestCode, resultCode, data);
+//		
+//		if ( requestCode == TTS_DATA_CHECK &&
+//				resultCode == Engine.CHECK_VOICE_DATA_PASS) {
+//			tts = new TextToSpeech(getActivity(), new OnInitListener() {
+//				@Override
+//				public void onInit(int status) {
+//					if (status == TextToSpeech.SUCCESS) {
+//						ttsIsInit = true;
+//					}
+//				}
+//			});
+//		} else {
+//			startActivity(new Intent(Engine.ACTION_INSTALL_TTS_DATA));
+//		}
+//	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -292,5 +325,4 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener{
 			editTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime()));
 		}
 	}
-
 }
