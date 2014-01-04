@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hello World!</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> 
+		<link rel="stylesheet" type="text/css" href="css/graph.css" />
+		<style type="text/css">
+			body {
+			  font: 10px sans-serif;
+			  margin: 0;
+			  padding: 0;
+			  width: 100%;
+			  height: 100%;
+			}
+			
+			.fullscreen {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+
+			.axis path,
+			.axis line,
+			.axis tick {
+			  fill: none;
+			  stroke: #000;
+			  shape-rendering: crispEdges;
+			}
+			
+			.grid {
+    			stroke: lightgrey;
+    			opacity: 0.5;
+			}
+
+			.x .tick:first-child text {
+				display: none;
+			}
+			
+			.line {
+			  fill: none;
+			  stroke-width: 1.5px;
+			}
+		</style>
+		<script type="text/javascript" src="js/d3.v3.min.js"></script>
+		<script type="text/javascript">
+			if (document.addEventListener) {
+			  window.addEventListener("load", drawGraph, false);
+			}
+
+			var setData = function(d) {
+				console.log("Hello, world!")
+			}
+
+			var months = [ 'Jan', 'Feb', 'Maa', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec' ]
+
+			
+			function drawGraph() {
+			console.log(data[0].date)
+				var graph = document.getElementById("graph")
+			
+				var margin = {top: 20, right: 20, bottom: 30, left: 50}
+				  , width = graph.clientWidth
+				  , height = graph.clientHeight
+				
+				var x = d3.time.scale()
+				               .range([0, width])
+				
+				var y = d3.scale.linear()
+				                .range([height, 0])
+				
+				var xAxis = d3.svg.axis()
+				                  .scale(x)
+				                  .orient("top")
+				                  .ticks(5)
+				                  .tickFormat(function(d) {
+				                  	return d.getDate() + " " + months[d.getMonth()]
+				                  })
+
+				var xGrid = d3.svg.axis()
+				                  .scale(x)
+				                  .orient("top")
+	    		                  .tickSize(height, height, 0)
+				                  .ticks(5)
+				                  .tickFormat("")
+
+				var yAxis = d3.svg.axis()
+	    		                  .scale(y)
+	    		                  .orient("right")
+	    		                  .ticks(5)
+	    		                  .tickFormat(function(d) {
+	    		                  	return d + " Kg"
+	    		                  })
+
+
+				var yGrid = d3.svg.axis()
+	    		                  .scale(y)
+	    		                  .orient("right")
+	    		                  .tickSize(width, width, 0)
+	    		                  .ticks(5)
+				                  .tickFormat("")
+
+				var color = d3.scale.category10()
+
+				var line = d3.svg.line()
+				                 .interpolate("basis")
+				                 .x(function(d) { return x(d3.time.format("%Y-%m-%d %H:%M").parse(d.date)) })
+				                 .y(function(d) { return y(d.close) })
+				
+				var svg = d3.select("svg")
+
+				x.domain(d3.extent(data, function(d) { return d3.time.format("%Y-%m-%d %H:%M").parse(d.date) }))
+				y.domain(d3.extent(data, function(d) { return d.close }))
+				
+				svg.append("g")
+	               .attr("class", "x grid")
+	               .attr("transform", "translate(0," + height + ")")
+	               .call(xGrid)
+
+				svg.append("g")
+				   .attr("class", "y grid")
+				   .call(yGrid)
+
+				svg.append("path")
+				    .datum(data)
+				    .attr("class", "line")
+				    .attr("d", line)
+				    .style("stroke", function(d, i) {
+				    	return color(i)
+				    })
+
+				svg.append("g")
+				   .attr("class", "y axis")
+				   .attr("id", "yAxis")
+				   .call(yAxis)
+	    		   .selectAll("text")
+	               .attr("transform", "translate(0,-" + parseInt(document.defaultView.getComputedStyle(document.getElementById("yAxis"),null).getPropertyValue("font-size")) / 2 + ")")
+
+				svg.append("g")
+	               .attr("class", "x axis")
+	               .attr("transform", "translate(0," + height + ")")
+	               .call(xAxis)
+	        }
+		</script>
+	</head>
+	<body>
+		<svg id="graph" class="fullscreen"></svg>
+	</body>
+</html>
