@@ -54,7 +54,8 @@ public class GeschiedenisFragment extends Fragment implements LoaderManager.Load
 		// create the adapter using the cursor pointing to the desired data
 		//as well as the layout information
 		mAdapter = new MetingenAdapter(
-				getActivity(), R.layout.geschiedenis_list_item,
+				getActivity(),
+				R.layout.geschiedenis_list_item,
 				null,
 				columns,
 				to,
@@ -92,7 +93,13 @@ public class GeschiedenisFragment extends Fragment implements LoaderManager.Load
 				Metingen.COLUMN_NAME_DATUM
 		};
 		
-		cursorLoader = new CursorLoader(getActivity(), GewichtProvider.METINGEN_URI , projection, null, null, null);
+		cursorLoader = new CursorLoader(
+				getActivity(),
+				GewichtProvider.METINGEN_URI,
+				projection,
+				null,
+				null,
+				Metingen.COLUMN_NAME_DATUM + " DESC");
 		return cursorLoader;
 	}
 

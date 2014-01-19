@@ -17,6 +17,7 @@
 				display: block;
 				width: 100%;
 				height: 100%;
+				background-color: yellow;
 			}
 
 			.axis path,
@@ -43,24 +44,24 @@
 		</style>
 		<script type="text/javascript" src="js/d3.v3.min.js"></script>
 		<script type="text/javascript">
-			if (document.addEventListener) {
-			  window.addEventListener("load", drawGraph, false);
-			}
-
-			var setData = function(d) {
-				console.log("Hello, world!")
-			}
+			// if (document.addEventListener) {
+			//   window.addEventListener("load", drawGraph, false);
+			// }
 
 			var months = [ 'Jan', 'Feb', 'Maa', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec' ]
 
-			
-			function drawGraph() {
-			console.log(data[0].date)
-				var graph = document.getElementById("graph")
+			var drawGraph = function drawGraph() {
+				
+				//var graph = document.getElementById("graph")
+				var graph = d3.select("body")
+				              .append("svg:svg")
+				              .attr("id", "grafiek")
+
+
 			
 				var margin = {top: 20, right: 20, bottom: 30, left: 50}
-				  , width = graph.clientWidth
-				  , height = graph.clientHeight
+				  , width = window.innerWidth
+				  , height = window.innerHeight
 				
 				var x = d3.time.scale()
 				               .range([0, width])
@@ -76,12 +77,12 @@
 				                  	return d.getDate() + " " + months[d.getMonth()]
 				                  })
 
-				var xGrid = d3.svg.axis()
-				                  .scale(x)
-				                  .orient("top")
-	    		                  .tickSize(height, height, 0)
-				                  .ticks(5)
-				                  .tickFormat("")
+				// var xGrid = d3.svg.axis()
+				//                   .scale(x)
+				//                   .orient("top")
+	   //  		                  .tickSize(height, height, 0)
+				//                   .ticks(5)
+				//                   .tickFormat("")
 
 				var yAxis = d3.svg.axis()
 	    		                  .scale(y)
@@ -92,12 +93,12 @@
 	    		                  })
 
 
-				var yGrid = d3.svg.axis()
-	    		                  .scale(y)
-	    		                  .orient("right")
-	    		                  .tickSize(width, width, 0)
-	    		                  .ticks(5)
-				                  .tickFormat("")
+				// var yGrid = d3.svg.axis()
+	   //  		                  .scale(y)
+	   //  		                  .orient("right")
+	   //  		                  .tickSize(width, width, 0)
+	   //  		                  .ticks(5)
+				//                   .tickFormat("")
 
 				var color = d3.scale.category10()
 
@@ -109,16 +110,18 @@
 				var svg = d3.select("svg")
 
 				x.domain(d3.extent(data, function(d) { return d3.time.format("%Y-%m-%d %H:%M").parse(d.date) }))
-				y.domain(d3.extent(data, function(d) { return d.close }))
+				// .nice()
+				y.domain([d3.min(data, function(d) { return d.close }) - 5, d3.max(data, function(d) { return d.close }) + 5])
+				 //.nice()
 				
-				svg.append("g")
-	               .attr("class", "x grid")
-	               .attr("transform", "translate(0," + height + ")")
-	               .call(xGrid)
+				// svg.append("g")
+	   //             .attr("class", "x grid")
+	   //             .attr("transform", "translate(0," + height + ")")
+	   //             .call(xGrid)
 
-				svg.append("g")
-				   .attr("class", "y grid")
-				   .call(yGrid)
+				// svg.append("g")
+				//    .attr("class", "y grid")
+				//    .call(yGrid)
 
 				svg.append("path")
 				    .datum(data)
@@ -143,6 +146,5 @@
 		</script>
 	</head>
 	<body>
-		<svg id="graph" class="fullscreen"></svg>
 	</body>
 </html>
