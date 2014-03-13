@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Account Preferences" >
+
+    <PreferenceCategory android:title="Instellingen">
+    <PreferenceScreen
+        android:key="account_settings"
+        android:summary="Sync frequency, notifications, etc."
+        android:title="Account Settings" >
+        <intent
+            android:action="some.unique.action.name.account.EDIT"
+            android:targetClass="me.rasing.mijngewicht.PreferencesActivity"
+            android:targetPackage="me.rasing.mijngewicht" >
+        </intent>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:key="profile_settings"
+        android:summary="Sync frequency, notifications, etc."
+        android:title="Profile Settings" >
+        <intent
+            android:action="some.unique.action.name.account.Test"
+            android:targetClass="me.rasing.mijngewicht.ProfilePreferencesActivity"
+            android:targetPackage="me.rasing.mijngewicht" >
+        </intent>
+    </PreferenceScreen>
+</PreferenceCategory>
+</PreferenceScreen>

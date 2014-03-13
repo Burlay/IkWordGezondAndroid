@@ -1,22 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Mijn gewicht</string>
-    <string name="action_settings">Instellingen</string>
-    <string name="action_geschiedenis">Geschiedenis</string>
+    <string name="app_name">My Weight</string>
+    <string name="tag_line">The best help for losing weight</string>
+    <string name="first_weighing">Add first weighing</string>
+    
+    <string name="dashboard">Dashboard</string>
+    <string name="history">History</string>
+    <string name="settings">Settings</string>
+    <string name="graph">Graph</string>
+    <string name="profile">Profile</string>
+    <string-array name="drawer_items">
+        <item>@string/dashboard</item>
+        <item>@string/graph</item>
+        <item>@string/history</item>
+        <item>@string/profile</item>
+        <item>@string/settings</item>
+    </string-array>
+    
+    <string name="action_new">Add weighing</string>
+    
+    <string name="weight">Weight: </string>
+    <string name="bmi">Body Mass Index</string>
+    <string name="weight_lost">Weight lost</string>
+    <string name="weight_gained">Weight gained</string>
+    
+    <string name="no_measurements_to_display">No measurements to display</string>
+    
     <string name="action_opslaan">Opslaan</string>
-    <string name="actie_nieuw">Toevoegen</string>
-    <string name="gewicht">Gewicht: </string>
-    <string name="profiel">Overzicht</string>
     <string name="nieuwe_weging">Weging toevoegen</string>
-    <string name="geschiedenis">Geschiedenis</string>
-    <string name="instellingen">Instellingen</string>
     <string name="title_activity_metingen_detail">MetingenDetailActivity</string>
-    <string name="totaal_tekst">Afgevallen: </string>
-    <string name="totaal_tekst_aangekomen">Aangekomen: </string>
     <string name="title_activity_meeting_invoeren">MeetingInvoerenActivity</string>
     <string name="done">Opslaan</string>
     <string name="discard">Annuleren</string>
-    <string name="grafiek">Grafiek</string>
     
+    <string name="action_settings">Instellingen</string>
+    <string name="action_geschiedenis">Geschiedenis</string>
+    
+    
+    <string name="drawer_open">Open navigatie menu</string>
+    <string name="drawer_close">Sluit navigatie menu</string>
+    
+    <!-- Preferences -->
+    <string name="weight_unit">Gewichtseenheid</string>
+    <string-array name="weight_unit_options">
+        <item>Kilogrammen</item>
+        <item>Ponden</item>
+    </string-array>
+    <string-array name="weight_unit_values">
+        <item>kg</item>
+        <item>lb</item>
+    </string-array>
+    <string-array name="length_unit">
+        <item>Meters</item>
+        <item>Yards</item>
+    </string-array>
+    <string-array name="length_unit_values">
+        <item>m</item>
+        <item>yd</item>
+    </string-array>
+    
+    <string name="gender">Geslacht</string>
+    <string name="birthdate">Geboortedatum</string>
+    <string-array name="genders">
+        <item>Man</item>
+        <item>Vrouw</item>
+    </string-array>
+    <string-array name="genders_values">
+        <item>m</item>
+        <item>f</item>
+    </string-array>
 </resources>

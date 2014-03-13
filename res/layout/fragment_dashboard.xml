@@ -9,34 +9,63 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/weight"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/fragmentDashboardWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:baselineAligned="false"
-        android:padding="16dp" >
+        android:padding="8dp" >
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="50"
-            android:paddingRight="16dp" >
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingRight="8dp" >
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/bmiLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gewicht"
+                android:text="@string/bmi"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
-                android:id="@+id/fragmentDashboardWeight"
+                android:id="@+id/bmi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="50" >
+            android:layout_weight="50"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/fragmentDashboardTotalLostText"
@@ -48,7 +77,8 @@
                 android:id="@+id/fragmentDashboardTotalLost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

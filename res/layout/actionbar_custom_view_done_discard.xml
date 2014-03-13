@@ -15,13 +15,46 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="horizontal"
-    android:divider="?android:attr/dividerVertical"
-    android:showDividers="middle"
-    android:dividerPadding="12dp">
+    android:baselineAligned="false">
 
-    <include layout="@layout/actionbar_discard_button" />
-    <include layout="@layout/actionbar_done_button" />
+    <RelativeLayout
+        android:id="@+id/actionbar_discard"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#db3b19" >
+
+        <TextView
+            style="?android:actionBarTabTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@drawable/ic_action_discard"
+            android:gravity="center_vertical"
+            android:text="@string/discard" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/actionbar_done"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#9ea347" >
+
+        <TextView
+            style="?android:actionBarTabTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@drawable/ic_action_done"
+            android:gravity="center_vertical"
+            android:text="@string/done" />
+
+    </RelativeLayout>
 </LinearLayout>
