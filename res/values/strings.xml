@@ -9,6 +9,7 @@
     <string name="discard">Cancel</string>
     <string name="weight">Weight</string>
     <string name="date_time">Date &amp; Time</string>
+    <string name="blank_state">Click on the + to add your first weighing.</string>
     
     <string name="profiel">Overview</string>
     <string name="geschiedenis">History</string>
