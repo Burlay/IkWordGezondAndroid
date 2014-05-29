@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 import android.app.ActionBar;
 import android.app.DatePickerDialog;
@@ -94,7 +95,7 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener {
 			mWeight.setText(NumberFormat.getInstance().format(gewicht));
 
 			SimpleDateFormat format = 
-					new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+					new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
 			try {
 				//txtDatum.setText(format.parse(datum).toString());
 				editDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(format.parse(datum)));
@@ -154,7 +155,8 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener {
 						imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 						try {
 							Date datum = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).parse(mDatum + " " + mTijdstip);
-							DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+							DateFormat formatter = new SimpleDateFormat(
+									"yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
 
 							// Create a new map of values, where column names are the keys
 							ContentValues values = new ContentValues();
@@ -173,6 +175,7 @@ public class NieuwemeetingFragment extends Fragment implements OnClickListener {
 										selectionArgs);
 							} else {
 								// Insert the new row, returning the primary key value of the new row
+								values.put(Metingen.COLUMN_NAME_GUID, UUID.randomUUID().toString());
 								db.insert(
 										Metingen.TABLE_NAME,
 										null,

@@ -5,8 +5,8 @@
     android:orientation="horizontal"
     android:paddingLeft="8dip"
     android:paddingRight="8dip"
-        android:paddingTop="16dip"
-        android:paddingBottom="16dip" >
+    android:paddingTop="16dip"
+    android:paddingBottom="16dip" >
 
     <TextView
         android:id="@+id/datum"

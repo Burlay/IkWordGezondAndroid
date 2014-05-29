@@ -68,7 +68,7 @@ public class MetingenAdapter extends SimpleCursorAdapter {
 		c.moveToPosition(position);
 		
 		SimpleDateFormat format = 
-				new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+				new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
 		
 		final String datum = c.getString(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
 		

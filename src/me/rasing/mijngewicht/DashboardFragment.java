@@ -1,19 +1,17 @@
 package me.rasing.mijngewicht;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 
-import me.rasing.mijngewicht.providers.GewichtProvider;
+import me.rasing.mijngewicht.models.MeasurementsModel;
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -24,17 +22,33 @@ public class DashboardFragment extends Fragment {
 
 	private WebView webView;
 
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-		
-		webView = (WebView) rootView.findViewById(R.id.webView1);
+
+		webView = (WebView) rootView.findViewById(R.id.webView1);// disable scroll on touch
+		webView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return (event.getAction() == MotionEvent.ACTION_MOVE);
+			}
+		});
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			WebView.setWebContentsDebuggingEnabled(true);
+		}
+		this.createGraph(webView);
+
+		return rootView;
+	}
+	
+	@SuppressLint("SetJavaScriptEnabled")
+	private void createGraph(WebView webView2) {
 		WebSettings settings= webView.getSettings();
 		settings.setJavaScriptEnabled(true);
-		// settings.setAllowFileAccessFromFileURLs(true); //Maybe you don't need this rule
-		// settings.setAllowUniversalAccessFromFileURLs(true);
+		webView.addJavascriptInterface(new MeasurementsModel(this.getActivity().getApplicationContext()), "MeasurementsModel");
 
 		webView.setWebChromeClient(new WebChromeClient() {
 			public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -50,100 +64,34 @@ public class DashboardFragment extends Fragment {
 		} else {
 			webView.loadUrl("file://localhost/android_asset/new_graph.html");
 		}
-		return rootView;
-	}    
+	}
 	
     // TODO Move database access of the UI thread
     @Override
 	public void onResume() {
-    	// specifies which columns from the database
-    	// you will actually use after this query.
-    	String[] projection = {
-    	    Metingen._ID,
-    	    Metingen.COLUMN_NAME_GEWICHT,
-    	    Metingen.COLUMN_NAME_DATUM
-    	    };
-
-    	ContentResolver mContentResolver = getActivity().getContentResolver();
-    	Cursor cursor = mContentResolver.query(
-    			GewichtProvider.METINGEN_URI,
-    			projection,
-    			null,
-    			null,
-    			Metingen.COLUMN_NAME_DATUM + " DESC"
-    			);
+        DecimalFormat formatter = new DecimalFormat("#.##");
     	
-    	String data = "var data = [";
-
-    	while (cursor.moveToNext()) {
-    		final float weight = cursor.getFloat( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
-    		
-    		final String datum = cursor.getString( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_DATUM ) );
-    		
-    		data += "{" + "'date': '" + datum + "', 'close':'" + weight + "'},";
-    	}
+    	MeasurementsModel measurements = new MeasurementsModel(this.getActivity().getApplicationContext());
+    	//Context context = this.getActivity().getApplicationContext();
     	
-    	data = data.replaceAll(",$", "");
-    	data += "];";
-
-    	webView.loadUrl("javascript:" + data);
+    	String weightUnit = measurements.getWeightUnit();
     	
-    	webView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-    		@Override
-            public void onGlobalLayout() {
-                webView.loadUrl("javascript:if(typeof drawGraph === \"undefined\") {" +
-                                    "if (document.addEventListener) { window.addEventListener('load', function(){drawGraph()}, false); }" +
-                		        "} else { " +
-                                    "drawGraph();" +
-                		        " }");
-            }
-    	});
+    	float currentWeight = measurements.getCurrentWeight(weightUnit);
+		TextView txtWeight = (TextView) getActivity().findViewById(R.id.fragmentDashboardWeight);
+		txtWeight.setText(formatter.format(currentWeight) + " " + weightUnit);
 
-    	if ( cursor.getCount() > 0 ) {
-    		cursor.moveToFirst();
-
-    		float weight = cursor.getFloat( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
-
-    		float difference; 
-    		if ( cursor.getCount() == 1 ) {
-    			difference = 0;
-    		} else {
-    			// Save the difference between the 2 most recent weights.
-    			cursor.moveToNext();
-    			difference = weight - cursor.getFloat(cursor.getColumnIndex(Metingen.COLUMN_NAME_GEWICHT));
-    		}
-
-    		cursor.moveToLast();
-    		float startWeight = cursor.getFloat(
-    				cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT)
-    				);
-
-    		cursor.close();
-
-    		// Calculate the total weight lost or gained and display it.
-    		float totalLost = weight - startWeight;
-
-    		TextView txtTotalLost = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLost);
-    		txtTotalLost.setText(NumberFormat.getInstance().format(Math.abs(totalLost)) + " kg");
-
-    		TextView mTotaal = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLostText);
-    		if (difference <= 0 ) {
-    			mTotaal.setText(R.string.totaal_tekst);
-    		} else if (difference > 0 ) {
-    			mTotaal.setText(R.string.totaal_tekst_aangekomen);
-    		}
-
-    		// Display the current weight.
-    		TextView txtWeight = (TextView) getActivity().findViewById(R.id.fragmentDashboardWeight);
-    		txtWeight.setText(NumberFormat.getInstance().format(weight) + " kg");
-    	}
-
+		float weightDifference = measurements.getTotalWeightDifference(weightUnit);
+		TextView mTotaal = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLostText);
+		if (weightDifference <= 0 ) {
+			//mTotaal.setText(R.string.weight_lost);
+			mTotaal.setText("srhd");
+		} else if (weightDifference > 0 ) {
+			mTotaal.setText("shd");
+			//mTotaal.setText(R.string.weight_gained);
+		}
+		TextView txtTotalLost = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLost);
+    	txtTotalLost.setText(formatter.format(Math.abs(weightDifference)) + " " + weightUnit);
+    	
 		super.onResume();
     }
-
-	@Override
-	public void onPause() {
-		webView.loadUrl("javascript:d3.select('#grafiek').remove();");
-		super.onPause();
-	}
 }
