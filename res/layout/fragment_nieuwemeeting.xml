@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="Gewicht"
+        android:text="@string/weight"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -35,7 +35,7 @@
         android:layout_alignLeft="@+id/gewicht"
         android:layout_below="@+id/gewicht"
         android:paddingTop="24dp"
-        android:text="Datum &amp; tijd"
+        android:text="@string/date_time"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <LinearLayout

@@ -26,12 +26,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="me.rasing.mijngewicht.MetingenDetailActivity"
-            android:label="@string/title_activity_metingen_detail" >
+            android:name="me.rasing.mijngewicht.MetingenDetailActivity" >
         </activity>
         <activity
-            android:name="me.rasing.mijngewicht.MeetingInvoerenActivity"
-            android:label="@string/title_activity_meeting_invoeren" >
+            android:name="me.rasing.mijngewicht.MeetingInvoerenActivity" >
         </activity>
 		<provider
 		    android:name="me.rasing.mijngewicht.providers.GewichtProvider" 

@@ -5,13 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import me.rasing.mijngewicht.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.TextView;
 
 public class MetingenDetailActivity extends Activity {
@@ -28,19 +26,11 @@ public class MetingenDetailActivity extends Activity {
 		final DbHelper mDbHelper = new DbHelper(getBaseContext());
 		final SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-		// Define a projection that specifies which columns from the database
-		// you will actually use after this query.
 		final String[] projection = {
 				Metingen._ID,
 				Metingen.COLUMN_NAME_GEWICHT,
 				Metingen.COLUMN_NAME_DATUM
 		};
-		
-		//final String[] values = {Integer.toString(id)};
-
-		// How you want the results sorted in the resulting Cursor
-		//String sortOrder =
-		//    FeedReaderContract.FeedEntry.COLUMN_NAME_UPDATED + " DESC";
 
 		final Cursor c = db.query(
 				Metingen.TABLE_NAME,  // The table to query
@@ -75,12 +65,5 @@ public class MetingenDetailActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.metingen_detail, menu);
-		return true;
 	}
 }

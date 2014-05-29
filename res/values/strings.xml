@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">Mijn gewicht</string>
-    <string name="action_settings">Instellingen</string>
-    <string name="action_geschiedenis">Geschiedenis</string>
-    <string name="action_opslaan">Opslaan</string>
-    <string name="actie_nieuw">Toevoegen</string>
-    <string name="gewicht">Gewicht: </string>
-    <string name="profiel">Overzicht</string>
-    <string name="nieuwe_weging">Weging toevoegen</string>
-    <string name="geschiedenis">Geschiedenis</string>
-    <string name="instellingen">Instellingen</string>
-    <string name="title_activity_metingen_detail">MetingenDetailActivity</string>
-    <string name="totaal_tekst">Afgevallen: </string>
-    <string name="totaal_tekst_aangekomen">Aangekomen: </string>
-    <string name="title_activity_meeting_invoeren">MeetingInvoerenActivity</string>
-    <string name="done">Opslaan</string>
-    <string name="discard">Annuleren</string>
-    <string name="grafiek">Grafiek</string>
+    <string name="app_name">My Weight</string>
+    <string name="gewicht">Current weight: </string>
+    <string name="weight_lost">Weight lost: </string>
+    <string name="weight_gained">Weight gained: </string>
+    <string name="actie_nieuw">Add new weighing</string>
+    <string name="done">Save</string>
+    <string name="discard">Cancel</string>
+    <string name="weight">Weight</string>
+    <string name="date_time">Date &amp; Time</string>
     
+    <string name="profiel">Overview</string>
+    <string name="geschiedenis">History</string>
+    <string-array name="drawer_items">
+        <item>@string/profiel</item>
+        <item>@string/geschiedenis</item>
+    </string-array>
 </resources>

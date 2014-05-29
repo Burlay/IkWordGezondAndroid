@@ -18,8 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
-public class MainActivity extends FragmentActivity implements OnNavigationListener {
-    
+public class MainActivity extends FragmentActivity implements
+		OnNavigationListener {
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,21 +33,19 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
-		// Set up the dropdown list navigation in the action bar.
-		actionBar.setListNavigationCallbacks(
-		// Specify a SpinnerAdapter to populate the dropdown list.
-		new ArrayAdapter<String>(getActionBarThemedContextCompat(),
+		ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(
+				getActionBarThemedContextCompat(),
 				android.R.layout.simple_list_item_1,
-				android.R.id.text1, new String[] {
-						getString(R.string.profiel),
-						getString(R.string.geschiedenis)}),
-				this);
-		
+				android.R.id.text1,
+				getResources().getStringArray(R.array.drawer_items));
+		// Set up the dropdown list navigation in the action bar.
+		actionBar.setListNavigationCallbacks(menuAdapter, this);
+
 		// Load the correct fragment on orientation change.
-		if(savedInstanceState != null) {
-            int index = savedInstanceState.getInt("index");
-            actionBar.setSelectedNavigationItem(index);
-        }
+		if (savedInstanceState != null) {
+			int index = savedInstanceState.getInt("index");
+			actionBar.setSelectedNavigationItem(index);
+		}
 	}
 
 	/**
@@ -63,97 +62,91 @@ public class MainActivity extends FragmentActivity implements OnNavigationListen
 		}
 	}
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.profiel_menu, menu);
-    	return true;
-    }
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.profiel_menu, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	// handle item selection
-    	switch (item.getItemId()) {
-    	case R.id.actie_nieuw:
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle item selection
+		switch (item.getItemId()) {
+		case R.id.actie_nieuw:
 			Intent intent = new Intent(this, MeetingInvoerenActivity.class);
 			startActivity(intent);
-			
-    		return true;
-    	default:
-    		return super.onOptionsItemSelected(item);
-    	}
-    }
 
-    @Override
-    public boolean onNavigationItemSelected(int pos, long id) {
-    	String tag = "";
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
-    	FragmentManager fragmentManager= getSupportFragmentManager();
-    	Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+	@Override
+	public boolean onNavigationItemSelected(int pos, long id) {
+		String tag = "";
 
-    	switch (pos) {
-    	case 0:
-    		if(!(fragment instanceof DashboardFragment) || !(fragment instanceof BlankstateFragment)) {
-    			DbHelper mDbHelper = new DbHelper(getBaseContext());
-    			SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		Fragment fragment = fragmentManager.findFragmentById(R.id.container);
 
-    			// Define a projection that specifies which columns from the database
-    			// you will actually use after this query.
-    			String[] projection = {
-    					Metingen._ID,
-    					Metingen.COLUMN_NAME_GEWICHT,
-    					Metingen.COLUMN_NAME_DATUM
-    			};
+		switch (pos) {
+		case 0:
+			if (!(fragment instanceof DashboardFragment)
+					|| !(fragment instanceof BlankstateFragment)) {
+				DbHelper mDbHelper = new DbHelper(getBaseContext());
+				SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-    			// Get the 2 most recent weights.
-    			Cursor cursor = db.query(
-    					Metingen.TABLE_NAME,  // The table to query
-    					projection,           // The columns to return
-    					null,                 // The columns for the WHERE clause
-    					null,                 // The values for the WHERE clause
-    					null,                 // don't group the rows
-    					null,                 // don't filter by row groups
-    					null,
-    					"1"
-    					);
+				// Define a projection that specifies which columns from the
+				// database
+				// you will actually use after this query.
+				String[] projection = { Metingen._ID,
+						Metingen.COLUMN_NAME_GEWICHT,
+						Metingen.COLUMN_NAME_DATUM };
 
-    			if ( cursor.getCount() <= 0 ) {
-    				fragment = new BlankstateFragment();
-    				tag = "BlankState";
-    			} else {
-    				fragment = new DashboardFragment();
-    				tag = "Profiel";
-    			}
+				// Get the 2 most recent weights.
+				Cursor cursor = db.query(Metingen.TABLE_NAME, // The table to
+																// query
+						projection, // The columns to return
+						null, // The columns for the WHERE clause
+						null, // The values for the WHERE clause
+						null, // don't group the rows
+						null, // don't filter by row groups
+						null, "1");
 
-    			db.close();
+				if (cursor.getCount() <= 0) {
+					fragment = new BlankstateFragment();
+					tag = "BlankState";
+				} else {
+					fragment = new DashboardFragment();
+					tag = "Profiel";
+				}
 
-    			fragmentManager
-    			.beginTransaction()
-    			.replace(R.id.container, fragment, tag)
-    			.commit();
-    		}
-    		break;
-    	case 1:
-    		if(!(fragment instanceof GeschiedenisFragment)) {
-    			Log.d("!!!DATA!!!", "Maak niew geschiedenisfragment");
-    			fragment = new GeschiedenisFragment();
-    			tag = "Geschiedenis";
+				db.close();
 
-    			fragmentManager
-    			.beginTransaction()
-    			.replace(R.id.container, fragment, tag)
-    			.commit();
-    		}
-    		break;
-    	}
-    	return false;
-    }
+				fragmentManager.beginTransaction()
+						.replace(R.id.container, fragment, tag).commit();
+			}
+			break;
+		case 1:
+			if (!(fragment instanceof GeschiedenisFragment)) {
+				Log.d("!!!DATA!!!", "Maak niew geschiedenisfragment");
+				fragment = new GeschiedenisFragment();
+				tag = "Geschiedenis";
+
+				fragmentManager.beginTransaction()
+						.replace(R.id.container, fragment, tag).commit();
+			}
+			break;
+		}
+		return false;
+	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		// Save the selected item in the dropdown navigation.
 		int i = getActionBar().getSelectedNavigationIndex();
-	    outState.putInt("index", i);
+		outState.putInt("index", i);
 	}
 }

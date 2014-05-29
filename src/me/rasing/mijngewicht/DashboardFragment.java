@@ -83,11 +83,9 @@ public class DashboardFragment extends Fragment {
 		float weightDifference = measurements.getTotalWeightDifference(weightUnit);
 		TextView mTotaal = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLostText);
 		if (weightDifference <= 0 ) {
-			//mTotaal.setText(R.string.weight_lost);
-			mTotaal.setText("srhd");
+			mTotaal.setText(R.string.weight_lost);
 		} else if (weightDifference > 0 ) {
-			mTotaal.setText("shd");
-			//mTotaal.setText(R.string.weight_gained);
+			mTotaal.setText(R.string.weight_gained);
 		}
 		TextView txtTotalLost = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLost);
     	txtTotalLost.setText(formatter.format(Math.abs(weightDifference)) + " " + weightUnit);
