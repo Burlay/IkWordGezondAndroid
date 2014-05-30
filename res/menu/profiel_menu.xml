@@ -5,7 +5,11 @@
         android:id="@+id/actie_nieuw"
         android:orderInCategory="100"
         android:icon="@drawable/ic_content_new"
-        android:title="@string/actie_nieuw"
-        android:showAsAction="ifRoom" />
-
+        android:title="@string/action_new"
+        android:showAsAction="always|withText" />
+    
+    <item 
+        android:id="@+id/action_settings"
+        android:title="@string/settings"
+        android:showAsAction="never" />
 </menu>

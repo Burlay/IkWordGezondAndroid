@@ -1,19 +1,22 @@
-package me.rasing.mijngewicht;
+package me.rasing.mijngewicht.fragments;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import me.rasing.mijngewicht.DbHelper;
+import me.rasing.mijngewicht.Metingen;
+import me.rasing.mijngewicht.MetingenAdapter;
+import me.rasing.mijngewicht.R;
 import me.rasing.mijngewicht.providers.GewichtProvider;
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
-import android.content.Intent;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -23,11 +26,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class GeschiedenisFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, MultiChoiceModeListener {
+public class HistoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, MultiChoiceModeListener {
 	private MetingenAdapter mAdapter;
 	private CursorLoader cursorLoader;
 	private ListView listView;
@@ -35,7 +36,7 @@ public class GeschiedenisFragment extends Fragment implements LoaderManager.Load
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		final View rootView = inflater.inflate(R.layout.fragment_geschiedenig, container, false);
+		final View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 		
 		loadermanager = getLoaderManager();
 		loadermanager.initLoader(1, null, this);
@@ -52,7 +53,7 @@ public class GeschiedenisFragment extends Fragment implements LoaderManager.Load
 		};
 		
 		// create the adapter using the cursor pointing to the desired data
-		//as well as the layout information
+		// as well as the layout information
 		mAdapter = new MetingenAdapter(
 				getActivity(),
 				R.layout.geschiedenis_list_item,
@@ -67,18 +68,20 @@ public class GeschiedenisFragment extends Fragment implements LoaderManager.Load
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		listView.setMultiChoiceModeListener(this);
 		
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int pos,
-					long id) {
-				Cursor c = (Cursor) parent.getItemAtPosition(pos);
-				
-				Intent intent = new Intent(getActivity(), MeetingInvoerenActivity.class);
-				intent.putExtra(MeetingInvoerenActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
-				startActivity(intent);
-			}
-
-		});
+//		listView.setOnItemClickListener(new OnItemClickListener() {
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view, int pos,
+//					long id) {
+//				Cursor c = (Cursor) parent.getItemAtPosition(pos);
+//				
+//				Intent intent = new Intent(getActivity(), MeetingInvoerenActivity.class);
+//				intent.putExtra(MeetingInvoerenActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
+//				startActivity(intent);
+//			}
+//
+//		});
+		
+		listView.setEmptyView(rootView.findViewById(R.id.empty));
 	   
 		return rootView;
 	}

@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.util.Log;
 
 public class GewichtProvider extends ContentProvider {
-	private static final String AUTHORITY = "me.rasing.mijngewicht.providers.GewichtProvider";
+	public static final String AUTHORITY = "me.rasing.mijngewicht.providers.GewichtProvider";
 	public static final Uri METINGEN_URI = Uri.parse("content://" + AUTHORITY + "/" + Metingen.TABLE_NAME);
 	private static DbHelper mDbHelper;
 	private static final UriMatcher sUriMatcher;
@@ -54,8 +54,13 @@ public class GewichtProvider extends ContentProvider {
 	}
 
 	@Override
-	public Uri insert(Uri arg0, ContentValues arg1) {
-		// TODO Auto-generated method stub
+	public Uri insert(Uri uri, ContentValues mValues) {
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		long rowId = db.insert(Metingen.TABLE_NAME, null, mValues);
+		
+		if ( rowId > 0 ) {
+			getContext().getContentResolver().notifyChange(uri, null);
+		}
 		return null;
 	}
 
@@ -83,9 +88,15 @@ public class GewichtProvider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		int count = db.update(Metingen.TABLE_NAME, values, selection, selectionArgs);
+		
+		if ( count > 0 ) {
+			getContext().getContentResolver().notifyChange(uri, null);
+		}
+		
+		return count;
 	}
 	static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

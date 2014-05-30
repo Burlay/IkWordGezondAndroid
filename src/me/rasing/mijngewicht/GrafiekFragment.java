@@ -1,15 +1,24 @@
 package me.rasing.mijngewicht;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import me.rasing.mijngewicht.providers.GewichtProvider;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -23,19 +32,18 @@ public class GrafiekFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	View rootView = inflater.inflate(R.layout.fragment_grafiek, container, false);
+    	
     	webView = (WebView) rootView.findViewById(R.id.webview);
     	WebSettings settings= webView.getSettings();
     	settings.setJavaScriptEnabled(true);
-    	// settings.setAllowFileAccessFromFileURLs(true); //Maybe you don't need this rule
-    	// settings.setAllowUniversalAccessFromFileURLs(true);
     	
     	webView.setWebChromeClient(new WebChromeClient() {
-    		  //public boolean onConsoleMessage(ConsoleMessage cm) {
-    		  //  Log.d("MyApplication", cm.message() + " -- From line "
-    		  //                       + cm.lineNumber() + " of "
-    		  //                       + cm.sourceId() );
-    		  //  return true;
-    		  //}
+    		  public boolean onConsoleMessage(ConsoleMessage cm) {
+    		    Log.d("MyApplication", cm.message() + " -- From line "
+    		                         + cm.lineNumber() + " of "
+    		                         + cm.sourceId() );
+    		    return true;
+    		  }
     		});
 		
     	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -43,9 +51,13 @@ public class GrafiekFragment extends Fragment {
 		} else {
 			webView.loadUrl("file://localhost/android_asset/new_graph.html");
 		}
-		
-    	
-    	
+
+    	return rootView;
+    }
+
+    // TODO Move database access of the UI thread
+    @Override
+	public void onResume() {
     	// specifies which columns from the database
     	// you will actually use after this query.
     	String[] projection = {
@@ -67,20 +79,45 @@ public class GrafiekFragment extends Fragment {
 
     	while (cursor.moveToNext()) {
     		final float weight = cursor.getFloat( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
-    		
-    		final String datum = cursor.getString( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_DATUM ) );
-    		
-    		data += "{" + "'date': '" + datum + "', 'close':'" + weight + "'},";
 
-    		//Log.d( "!!!DATA!!!", datum );
+    		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
+    		DateFormat df2 = new SimpleDateFormat("yyy-MM-dd HH:mm", Locale.getDefault());
     		
-    		//Log.d( "!!!DATA!!!", Float.toString( weight ) );
+    		String datumString = cursor.getString( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_DATUM ) );
+    		
+    		Date date = null;
+			try {
+				date = df1.parse(datumString);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    		data += "{" + "'date': '" + df2.format(date) + "', 'close':'" + weight + "'},";
     	}
     	
     	data = data.replaceAll(",$", "");
     	data += "];";
 
     	webView.loadUrl("javascript:" + data);
-    	return rootView;
+    	
+    	webView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    		@Override
+            public void onGlobalLayout() {
+                webView.loadUrl("javascript:if(typeof drawGraph === \"undefined\") {" +
+                                    "if (document.addEventListener) { window.addEventListener('load', function(){drawGraph()}, false); }" +
+                		        "} else { " +
+                                    "drawGraph();" +
+                		        " }");
+            }
+    	});
+
+		super.onResume();
     }
+
+	@Override
+	public void onPause() {
+		webView.loadUrl("javascript:d3.select('#grafiek').remove();");
+		super.onPause();
+	}
 }

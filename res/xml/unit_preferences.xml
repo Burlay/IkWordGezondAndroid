@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+          android:title="Account Preferences">
+
+    <ListPreference
+        android:entries="@array/weight_unit_options"
+        android:entryValues="@array/weight_unit_values"
+        android:key="weightUnit"
+        android:title="@string/weight_unit" />
+    <ListPreference
+        android:key="lengthUnit"
+        android:entries="@array/length_unit"
+        android:title="Lengtemaat"
+        android:entryValues="@array/length_unit_values" />
+
+</PreferenceScreen>

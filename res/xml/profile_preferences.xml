@@ -1,0 +1,13 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="@string/gender"
+        android:entries="@array/genders"
+        android:entryValues="@array/genders_values"
+        android:key="gender" />
+    <me.rasing.mijngewicht.NumberPickerPreference
+        android:title="lengte"
+        android:key="length" />
+    <me.rasing.mijngewicht.DatePickerPreference
+        android:title="@string/birthdate"
+        android:key="birhtdate" />
+</PreferenceScreen>
