@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 
 import me.rasing.mijngewicht.models.MeasurementsModel;
 import android.annotation.SuppressLint;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -58,11 +60,40 @@ public class DashboardFragment extends Fragment {
 			  return true;
 			}
 		});
+		
+		DbHelper mDbHelper = new DbHelper(this.getActivity());
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			webView.loadUrl("file:///android_asset/new_graph.html");
+		String[] projection = {
+				"COUNT(*)",
+				};
+
+		Cursor cursor = db.query(Metingen.TABLE_NAME, // The table to query
+				projection, // The columns to return
+				null, // The columns for the WHERE clause
+				null, // The values for the WHERE clause
+				null, // don't group the rows
+				null, // don't filter by row groups
+				null,
+				null);
+		
+		cursor.moveToFirst();
+		int count = cursor.getInt(0);
+		cursor.close();
+		db.close();
+		
+		if (count == 1) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				webView.loadUrl("file:///android_asset/empty_graph.html");
+			} else {
+				webView.loadUrl("file://localhost/android_asset/empty_graph.html");
+			}
 		} else {
-			webView.loadUrl("file://localhost/android_asset/new_graph.html");
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				webView.loadUrl("file:///android_asset/new_graph.html");
+			} else {
+				webView.loadUrl("file://localhost/android_asset/new_graph.html");
+			}
 		}
 	}
 	

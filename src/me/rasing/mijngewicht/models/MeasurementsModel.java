@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 public class MeasurementsModel {
@@ -138,7 +137,7 @@ public class MeasurementsModel {
 	@JavascriptInterface
 	public String getWeightUnit() {
     	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-    	String weightUnit = sharedPref.getString("weightUnit", "");
+    	String weightUnit = sharedPref.getString("weightUnit", "kg");
     	
 		return weightUnit;
 	}

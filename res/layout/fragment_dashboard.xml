@@ -23,13 +23,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gewicht"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearance"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/fragmentDashboardWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearance"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -42,13 +44,15 @@
                 android:id="@+id/fragmentDashboardTotalLostText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearance"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/fragmentDashboardTotalLost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearance"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
