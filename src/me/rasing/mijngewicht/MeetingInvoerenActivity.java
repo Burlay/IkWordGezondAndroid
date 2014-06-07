@@ -1,6 +1,5 @@
 package me.rasing.mijngewicht;
 
-import me.rasing.mijngewicht.NieuwemeetingFragment.OnDoneOrDiscardSelectedListener;
 import me.rasing.mijngewicht.R;
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -11,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MeetingInvoerenActivity extends FragmentActivity implements OnDoneOrDiscardSelectedListener {
+public class MeetingInvoerenActivity extends FragmentActivity {
 	public static final String ID = "id";
 
 	@Override
@@ -58,15 +57,5 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnDoneO
         actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-	}
-
-	@Override
-	public void onDoneSelected() {
-		this.finish();
-	}
-
-	@Override
-	public void onDiscardSelected() {
-		this.finish();
 	}
 }

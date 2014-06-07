@@ -20,51 +20,7 @@
 <resources>
 
     <style name="Theme.Mijngewicht" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:popupMenuStyle">@style/PopupMenu.Mijngewicht</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Mijngewicht</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Mijngewicht</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Mijngewicht</item>
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Mijngewicht</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Mijngewicht</item>
-        
-                <!-- Light.DarkActionBar specific -->
-        <item name="android:actionBarWidgetTheme">@style/Theme.Mijngewicht.Widget</item>
-
-    </style>
-
-    <style name="ActionBar.Solid.Mijngewicht" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@drawable/ab_solid_mijngewicht</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mijngewicht</item>
-        <item name="android:progressBarStyle">@style/ProgressBar.Mijngewicht</item>
-    </style>
-
-    <style name="ActionBar.Transparent.Mijngewicht" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:progressBarStyle">@style/ProgressBar.Mijngewicht</item>
-    </style>
-
-    <style name="PopupMenu.Mijngewicht" parent="@android:style/Widget.Holo.ListPopupWindow">
-    </style>
-
-    <style name="DropDownListView.Mijngewicht" parent="@android:style/Widget.Holo.ListView.DropDown">
-    </style>
-
-    <style name="ActionBarTabStyle.Mijngewicht" parent="@android:style/Widget.Holo.ActionBar.TabView">
-    </style>
-
-    <style name="DropDownNav.Mijngewicht" parent="@android:style/Widget.Holo.Spinner">
-    </style>
-    
-    <style name="ProgressBar.Mijngewicht" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
-    </style>
-    
-    <style name="ActionButton.CloseMode.Mijngewicht" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
-    </style>
-
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Mijngewicht.Widget" parent="@android:style/Theme.Holo">
-        <item name="android:popupMenuStyle">@style/PopupMenu.Mijngewicht</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Mijngewicht</item>
-    </style>
+	</style>
 
 </resources>
 

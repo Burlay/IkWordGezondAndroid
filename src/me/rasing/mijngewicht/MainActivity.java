@@ -1,5 +1,7 @@
 package me.rasing.mijngewicht;
 
+import me.rasing.mijngewicht.fragments.BlankstateFragment;
+import me.rasing.mijngewicht.fragments.HistoryFragment;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
@@ -128,9 +130,9 @@ public class MainActivity extends FragmentActivity implements
 			}
 			break;
 		case 1:
-			if (!(fragment instanceof GeschiedenisFragment)) {
+			if (!(fragment instanceof HistoryFragment)) {
 				Log.d("!!!DATA!!!", "Maak niew geschiedenisfragment");
-				fragment = new GeschiedenisFragment();
+				fragment = new HistoryFragment();
 				tag = "Geschiedenis";
 
 				fragmentManager.beginTransaction()

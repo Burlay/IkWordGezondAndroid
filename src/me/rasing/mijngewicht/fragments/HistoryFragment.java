@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import me.rasing.mijngewicht.DbHelper;
+import me.rasing.mijngewicht.MeetingInvoerenActivity;
 import me.rasing.mijngewicht.Metingen;
 import me.rasing.mijngewicht.MetingenAdapter;
 import me.rasing.mijngewicht.R;
 import me.rasing.mijngewicht.providers.GewichtProvider;
-import android.app.Fragment;
-import android.app.LoaderManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.content.ContentResolver;
-import android.content.CursorLoader;
-import android.content.Loader;
+import android.content.Intent;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -26,6 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class HistoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, MultiChoiceModeListener {
@@ -68,18 +72,18 @@ public class HistoryFragment extends Fragment implements LoaderManager.LoaderCal
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		listView.setMultiChoiceModeListener(this);
 		
-//		listView.setOnItemClickListener(new OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view, int pos,
-//					long id) {
-//				Cursor c = (Cursor) parent.getItemAtPosition(pos);
-//				
-//				Intent intent = new Intent(getActivity(), MeetingInvoerenActivity.class);
-//				intent.putExtra(MeetingInvoerenActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
-//				startActivity(intent);
-//			}
-//
-//		});
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos,
+					long id) {
+				Cursor c = (Cursor) parent.getItemAtPosition(pos);
+				
+				Intent intent = new Intent(getActivity(), MeetingInvoerenActivity.class);
+				intent.putExtra(MeetingInvoerenActivity.ID, c.getInt(c.getColumnIndex(Metingen._ID)));
+				startActivity(intent);
+			}
+
+		});
 		
 		listView.setEmptyView(rootView.findViewById(R.id.empty));
 	   

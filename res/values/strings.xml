@@ -10,6 +10,7 @@
     <string name="weight">Gewicht</string>
     <string name="date_time">Datum &amp; Tijd</string>
     <string name="blank_state">Tik op de + om je eerste weging toe te voegen.</string>
+    <string name="no_measurements_to_display">@string/blank_state</string>
     
     <string name="profiel">Overzicht</string>
     <string name="geschiedenis">Geschiedenis</string>
