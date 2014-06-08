@@ -14,10 +14,13 @@
     <string name="navigation_drawer_open">Open navigatiemenu</string>
     <string name="navigation_drawer_close">Sluit navigatiemenu</string>
     
-    <string name="profiel">Overzicht</string>
+    <string name="profiel">Profiel</string>
     <string name="geschiedenis">Geschiedenis</string>
+    <string name="settings">Instellingen</string>
     <string-array name="drawer_items">
-        <item>@string/profiel</item>
+        <item>@string/weight</item>
         <item>@string/geschiedenis</item>
+        <item>@string/profiel</item>
+        <item>@string/settings</item>
     </string-array>
 </resources>
