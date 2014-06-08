@@ -1,17 +1,11 @@
 package me.rasing.mijngewicht.sync;
 
-import me.rasing.mijngewicht.authentication.AuthenticatorActivity;
-import me.rasing.mijngewicht.providers.GewichtProvider;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.IntentService;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmIntentService extends IntentService {
 
@@ -34,12 +28,12 @@ public class GcmIntentService extends IntentService {
 		
 		if ( !extras.isEmpty() ) {
 			if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-				AccountManager accountManager = AccountManager.get(this.getApplicationContext());
-				Account[] accounts = accountManager.getAccountsByType(AuthenticatorActivity.ARG_ACCOUNT_TYPE);
+				//AccountManager accountManager = AccountManager.get(this.getApplicationContext());
+				//Account[] accounts = accountManager.getAccountsByType(AuthenticatorActivity.ARG_ACCOUNT_TYPE);
 				
-				for ( Account account : accounts ) {
-			        //ContentResolver.requestSync(account, GewichtProvider.AUTHORITY, new Bundle());
-				}
+//				for ( Account account : accounts ) {
+//			        //ContentResolver.requestSync(account, GewichtProvider.AUTHORITY, new Bundle());
+//				}
 			}
 		}
 		

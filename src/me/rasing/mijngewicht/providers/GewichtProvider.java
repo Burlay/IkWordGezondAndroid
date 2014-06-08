@@ -68,20 +68,20 @@ public class GewichtProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
 			String sortOrder) {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		qb.setTables(Metingen.TABLE_NAME);
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		Cursor c = null;
 		
 		switch (sUriMatcher.match(uri)) {
 			case METINGEN:
+				qb.setTables(Metingen.TABLE_NAME);
+				c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 				break;
 			case METINGEN_ID:
 				Log.d("case", "Metingen_id");
 				break;
 			default:
-				Log.d("case", "not found");
+				throw new RuntimeException();
 		}
-		
-		SQLiteDatabase db = mDbHelper.getReadableDatabase();
-		Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 		
 		c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;

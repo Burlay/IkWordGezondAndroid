@@ -2,73 +2,64 @@ package me.rasing.mijngewicht;
 
 import me.rasing.mijngewicht.fragments.BlankstateFragment;
 import me.rasing.mijngewicht.fragments.HistoryFragment;
-import android.annotation.TargetApi;
+import me.rasing.mijngewicht.providers.GewichtProvider;
 import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
-public class MainActivity extends FragmentActivity implements
-		OnNavigationListener {
+public class MainActivity extends FragmentActivity 
+		implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+    /**
+     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     */
+    private NavigationDrawerFragment mNavigationDrawerFragment;
+
+    /**
+     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     */
+    private CharSequence mTitle;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_main);
-		setTitle("Profiel");
 
-		// Set up the action bar to show a dropdown list.
-		final ActionBar actionBar = getActionBar();
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mTitle = getTitle();
 
-		ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(
-				getActionBarThemedContextCompat(),
-				android.R.layout.simple_list_item_1,
-				android.R.id.text1,
-				getResources().getStringArray(R.array.drawer_items));
-		// Set up the dropdown list navigation in the action bar.
-		actionBar.setListNavigationCallbacks(menuAdapter, this);
-
-		// Load the correct fragment on orientation change.
-		if (savedInstanceState != null) {
-			int index = savedInstanceState.getInt("index");
-			actionBar.setSelectedNavigationItem(index);
-		}
+        // Set up the drawer.
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
 	}
 
-	/**
-	 * Backward-compatible version of {@link ActionBar#getThemedContext()} that
-	 * simply returns the {@link android.app.Activity} if
-	 * <code>getThemedContext</code> is unavailable.
-	 */
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	private Context getActionBarThemedContextCompat() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			return getActionBar().getThemedContext();
-		} else {
-			return this;
-		}
-	}
-
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.profiel_menu, menu);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+            // Only show items in the action bar relevant to this screen
+            // if the drawer is not showing. Otherwise, let the drawer
+            // decide what to show in the action bar.
+            getMenuInflater().inflate(R.menu.profiel_menu, menu);
+            restoreActionBar();
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+    public void restoreActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
+    }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -85,70 +76,30 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public boolean onNavigationItemSelected(int pos, long id) {
-		String tag = "";
-
+	public void onNavigationDrawerItemSelected(int position) {
 		FragmentManager fragmentManager = getSupportFragmentManager();
-		Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-
-		switch (pos) {
-		case 0:
-			if (!(fragment instanceof DashboardFragment)
-					|| !(fragment instanceof BlankstateFragment)) {
-				DbHelper mDbHelper = new DbHelper(getBaseContext());
-				SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-				// Define a projection that specifies which columns from the
-				// database
-				// you will actually use after this query.
-				String[] projection = { Metingen._ID,
-						Metingen.COLUMN_NAME_GEWICHT,
-						Metingen.COLUMN_NAME_DATUM };
-
-				// Get the 2 most recent weights.
-				Cursor cursor = db.query(Metingen.TABLE_NAME, // The table to
-																// query
-						projection, // The columns to return
-						null, // The columns for the WHERE clause
-						null, // The values for the WHERE clause
-						null, // don't group the rows
-						null, // don't filter by row groups
-						null, "1");
-
-				if (cursor.getCount() <= 0) {
-					fragment = new BlankstateFragment();
-					tag = "BlankState";
-				} else {
-					fragment = new DashboardFragment();
-					tag = "Profiel";
-				}
-
-				db.close();
-
-				fragmentManager.beginTransaction()
-						.replace(R.id.container, fragment, tag).commit();
-			}
-			break;
-		case 1:
-			if (!(fragment instanceof HistoryFragment)) {
-				Log.d("!!!DATA!!!", "Maak niew geschiedenisfragment");
-				fragment = new HistoryFragment();
-				tag = "Geschiedenis";
-
-				fragmentManager.beginTransaction()
-						.replace(R.id.container, fragment, tag).commit();
-			}
-			break;
-		}
-		return false;
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-
-		// Save the selected item in the dropdown navigation.
-		int i = getActionBar().getSelectedNavigationIndex();
-		outState.putInt("index", i);
+		mTitle = getResources().getStringArray(R.array.drawer_items)[position];
+		
+    	switch (position) {
+    	case 0:
+    		Uri uri = GewichtProvider.METINGEN_URI;
+    		String[] projection = null;
+    		Cursor cursor = this.getContentResolver().query(uri, projection, null, null, null);
+    		if (cursor.getCount() == 0) {
+        		fragmentManager.beginTransaction()
+        		.replace(R.id.container, new BlankstateFragment())
+        		.commit();
+    		} else {
+        		fragmentManager.beginTransaction()
+        		.replace(R.id.container, new DashboardFragment())
+        		.commit();
+    		}
+    		cursor.close();
+    		break;
+    	default:
+    		fragmentManager.beginTransaction()
+    		.replace(R.id.container, new HistoryFragment())
+    		.commit();
+    	}
 	}
 }

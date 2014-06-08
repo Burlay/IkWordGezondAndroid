@@ -7,7 +7,6 @@ import me.rasing.mijngewicht.models.MeasurementsModel;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -55,7 +54,7 @@ public class DashboardFragment extends Fragment {
         DecimalFormat formatter = new DecimalFormat("#.##");
     	
     	MeasurementsModel measurements = new MeasurementsModel(this.getActivity().getApplicationContext());
-    	Context context = this.getActivity().getApplicationContext();
+    	//Context context = this.getActivity().getApplicationContext();
     	
     	String weightUnit = measurements.getWeightUnit();
     	
