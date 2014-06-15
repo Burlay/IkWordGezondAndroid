@@ -73,8 +73,21 @@ public class GewichtProvider extends ContentProvider {
 		
 		switch (sUriMatcher.match(uri)) {
 			case METINGEN:
-				qb.setTables(Metingen.TABLE_NAME);
-				c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+				String limit = uri.getQueryParameter("LIMIT");
+				if (limit == null) {
+					qb.setTables(Metingen.TABLE_NAME);
+					c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+				} else {
+					String query = "SELECT ";
+					for (int i = 0; i < projection.length; i++) {
+						query += projection[i];
+						query += i!=projection.length-1?", ":" ";
+					}
+					query += "FROM " + Metingen.TABLE_NAME + " ";
+					query += sortOrder==null?"":"ORDER BY " + sortOrder + " ";
+					query += "LIMIT " + limit;
+					c = db.rawQuery(query, selectionArgs);
+				}
 				break;
 			case METINGEN_ID:
 				Log.d("case", "Metingen_id");
@@ -92,9 +105,8 @@ public class GewichtProvider extends ContentProvider {
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 		int count = db.update(Metingen.TABLE_NAME, values, selection, selectionArgs);
 		
-		if ( count > 0 ) {
+		if ( count > 0 )
 			getContext().getContentResolver().notifyChange(uri, null);
-		}
 		
 		return count;
 	}

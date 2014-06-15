@@ -1,11 +1,24 @@
 package me.rasing.mijngewicht;
 
-import me.rasing.mijngewicht.util.NavigationAdapter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import me.rasing.mijngewicht.providers.GewichtProvider;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Period;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.net.Uri.Builder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -14,10 +27,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class NavigationDrawerFragment extends Fragment {
 
@@ -43,12 +56,14 @@ public class NavigationDrawerFragment extends Fragment {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerListView;
+    //private ListView mDrawerListView;
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+
+	private ContentResolver mContentResolver;
 
     public NavigationDrawerFragment() {
     }
@@ -66,6 +81,8 @@ public class NavigationDrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
+        
+        mContentResolver = this.getActivity().getContentResolver();
 
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
@@ -81,21 +98,79 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
+    	LinearLayout mNavDrawer = (LinearLayout) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
-            }
-        });
-        mDrawerListView.setAdapter(new NavigationAdapter(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                getResources().getStringArray(R.array.drawer_items)));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+    	
+    	mNavDrawer.findViewById(R.id.nav_drawer).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				selectItem(0);
+			}});
+    	mNavDrawer.findViewById(R.id.proto_nav_geschiedenis).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				selectItem(1);
+			}});
+
+        String[] projection = {
+        		Metingen.COLUMN_NAME_GEWICHT,
+        		Metingen.COLUMN_NAME_DATUM};
+        Builder b = GewichtProvider.METINGEN_URI.buildUpon();
+        b.appendQueryParameter("LIMIT", "2");
+        Cursor c = mContentResolver.query(
+        		b.build(),
+        		projection,
+        		null,
+        		null,
+        		Metingen.COLUMN_NAME_DATUM + " DESC");
+        
+        if (c.getCount() != 0) {
+        	c.moveToFirst();
+        	Float weight = c.getFloat(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT));
+        	TextView weightView = (TextView) mNavDrawer.findViewById(R.id.nav_weight);
+        	weightView.setText(weight.toString() + " kg");
+        	
+        	c.moveToLast();
+        	Float previousWeight = c.getFloat(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT));
+        	TextView weightLost = (TextView) mNavDrawer.findViewById(R.id.nav_weightlost);
+        	Float weightDifference = previousWeight>=weight?previousWeight-weight:weight-previousWeight;
+        	String weightMessage = previousWeight>=weight?"afgevallen":"aangekomen";
+        	
+        	weightLost.setText(weightDifference.toString() + " kg " + weightMessage );
+        	
+        	DateTime now = DateTime.now();
+    		SimpleDateFormat format = 
+    				new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
+    		final String datum = c.getString(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
+    		Date d;
+			try {
+				d = format.parse(datum);
+	    		DateTime dateTime = d==null?null:new DateTime(d);
+	        	Period p = Days.daysBetween(dateTime.withTimeAtStartOfDay(), now.withTimeAtStartOfDay()).toPeriod();//new Period(dateTime, now);
+	        	String lastWeighing = "";
+	        	int days = p.getDays();
+	        	if (days == 0) {
+	        		lastWeighing = "Nog niet gewogen.";
+	        	} else if (days == 1) {
+	        		lastWeighing = "Gisteren gewogen";
+	        	} else if (days == 2) {
+	        		lastWeighing = "Eergisteren gewogen.";
+	        	} else if (days > 2 && days < 7) {
+	        		lastWeighing = days + " dagen geleden gewogen.";
+	        	} else if (days >= 7 && days <= 13) {
+	        		lastWeighing = "Vorige week gewogen.";
+	        	} else if (days >= 14) {
+	        		lastWeighing = p.getWeeks() + " weken geleden gewogen.";
+	        	}
+	        	
+	        	TextView lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
+	        	lastWeighingView.setText(lastWeighing);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
+        }
+        
+        return mNavDrawer;
     }
 
     public boolean isDrawerOpen() {
@@ -178,9 +253,6 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
-        }
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }

@@ -17,7 +17,9 @@ import android.view.MenuItem;
 public class MainActivity extends FragmentActivity 
 		implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    /**
+    private static final String STATE_CURRENT_TITLE = null;
+
+	/**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -34,7 +36,12 @@ public class MainActivity extends FragmentActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
+
+        if (savedInstanceState != null) {
+            mTitle = savedInstanceState.getCharSequence(STATE_CURRENT_TITLE);
+        } else {
+            mTitle = getTitle();
+        }
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -96,10 +103,25 @@ public class MainActivity extends FragmentActivity
     		}
     		cursor.close();
     		break;
-    	default:
+    	case 1:
     		fragmentManager.beginTransaction()
     		.replace(R.id.container, new HistoryFragment())
     		.commit();
+    		break;
+    	case 2:
+    		fragmentManager.beginTransaction()
+    		.replace(R.id.container, new HistoryFragment())
+    		.commit();
+    		break;
+    	case 3:
+    		Intent intent = new Intent(this, PreferencesActivity.class);
+    		this.startActivity(intent);
     	}
 	}
+	
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharSequence(STATE_CURRENT_TITLE, mTitle);
+    }
 }
