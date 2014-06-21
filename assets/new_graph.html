@@ -50,7 +50,6 @@
         var xAxis = d3.svg.axis()
                           .scale(x)
                           .orient("top")
-                          .ticks(5)
                           .tickFormat(function(d) {
                             return d.getDate() + " " + months[d.getMonth()]
                           })
@@ -58,7 +57,6 @@
         var yAxis = d3.svg.axis()
                             .scale(y)
                             .orient("right")
-                            .ticks(5)
                             .tickFormat(function(d) {
                               return d + " " + weightUnit;
                             })
@@ -75,7 +73,7 @@
 		            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         x.domain(d3.extent(data, function(d) { return d3.time.format("%Y-%m-%d %H:%M").parse(d.date) }))
-        y.domain([d3.min(data, function(d) { return d.close }) - 5, d3.max(data, function(d) { return d.close }) + 5])
+        y.domain([0, d3.max(data, function(d) { return d.close }) + 5])
 
         svg.append("path")
             .datum(data)
@@ -89,7 +87,6 @@
            .attr("class", "y axis")
            .attr("id", "yAxis")
            .call(yAxis)
-             .selectAll("text")
 
         svg.append("g")
                  .attr("class", "x axis")
