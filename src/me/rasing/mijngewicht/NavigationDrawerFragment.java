@@ -1,5 +1,6 @@
 package me.rasing.mijngewicht;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +25,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -126,9 +128,15 @@ public class NavigationDrawerFragment extends Fragment {
         
         if (c.getCount() != 0) {
         	c.moveToFirst();
+        	DecimalFormat df = new DecimalFormat("#.##");
         	Float weight = c.getFloat(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT));
         	TextView weightView = (TextView) mNavDrawer.findViewById(R.id.nav_weight);
-        	weightView.setText(weight.toString() + " kg");
+        	weightView.setText(df.format(weight).toString() + " kg");
+        	
+
+    		SimpleDateFormat format = 
+    				new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
+    		final String datum = c.getString(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
         	
         	c.moveToLast();
         	Float previousWeight = c.getFloat(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_GEWICHT));
@@ -136,12 +144,9 @@ public class NavigationDrawerFragment extends Fragment {
         	Float weightDifference = previousWeight>=weight?previousWeight-weight:weight-previousWeight;
         	String weightMessage = previousWeight>=weight?"afgevallen":"aangekomen";
         	
-        	weightLost.setText(weightDifference.toString() + " kg " + weightMessage );
+        	weightLost.setText(df.format(weightDifference).toString() + " kg " + weightMessage );
         	
         	DateTime now = DateTime.now();
-    		SimpleDateFormat format = 
-    				new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
-    		final String datum = c.getString(c.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
     		Date d;
 			try {
 				d = format.parse(datum);
@@ -160,7 +165,7 @@ public class NavigationDrawerFragment extends Fragment {
 	        	} else if (days >= 7 && days <= 13) {
 	        		lastWeighing = "Vorige week gewogen.";
 	        	} else if (days >= 14) {
-	        		lastWeighing = p.getWeeks() + " weken geleden gewogen.";
+	        		lastWeighing = p.getDays() / 7 + " weken geleden gewogen.";
 	        	}
 	        	
 	        	TextView lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
