@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+<<<<<<< HEAD
 import me.rasing.mijngewicht.R;
 import android.app.ActionBar;
 import android.app.NotificationManager;
@@ -14,9 +15,13 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+=======
+import android.app.ActionBar;
+import android.content.ContentValues;
+import android.content.Context;
+>>>>>>> newmeasurement
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
@@ -56,8 +61,7 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // "Discard"
-                        finish(); // TODO: don't just finish()!
+                        finish();
                     }
                 });
 
@@ -133,6 +137,7 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 
 		db.close();
 		
+<<<<<<< HEAD
 		// Plan notification.
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
@@ -163,6 +168,8 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 		int mId = 0;
 		mNotificationManager.notify(mId, mBuilder.build());
 		
+=======
+>>>>>>> newmeasurement
 		finish();
 	}
 }
