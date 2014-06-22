@@ -43,5 +43,10 @@
 		    android:name="me.rasing.mijngewicht.providers.GewichtProvider" 
 		    android:authorities="me.rasing.mijngewicht.providers.GewichtProvider"
 		    android:permission="me.rasing.mijngewicht.providers.GewichtProvider.ReadWrite" />
+		<receiver android:name=".NotificationScheduler" android:exported="false">
+		    <intent-filter>
+		        <action android:name="me.rasing.mijngewicht.SCHEDULE_NOTIFICATION"></action>
+		    </intent-filter>
+		</receiver>
     </application>
 </manifest>

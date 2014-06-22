@@ -7,25 +7,13 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-<<<<<<< HEAD
-import me.rasing.mijngewicht.R;
-import android.app.ActionBar;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-=======
 import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Context;
->>>>>>> newmeasurement
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -137,39 +125,10 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 
 		db.close();
 		
-<<<<<<< HEAD
-		// Plan notification.
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_stat_mg)
-		        .setContentTitle("My notification")
-		        .setContentText("Hello World!");
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(this, MeetingInvoerenActivity.class);
-
-		// The stack builder object will contain an artificial back stack for the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(MainActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent =
-		        stackBuilder.getPendingIntent(
-		            0,
-		            PendingIntent.FLAG_UPDATE_CURRENT
-		        );
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager =
-		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		int mId = 0;
-		mNotificationManager.notify(mId, mBuilder.build());
+		// Schedule notification.
+		NotificationScheduler notificationScheduler = new NotificationScheduler();
+		notificationScheduler.ScheduleNotification(getBaseContext());
 		
-=======
->>>>>>> newmeasurement
 		finish();
 	}
 }
