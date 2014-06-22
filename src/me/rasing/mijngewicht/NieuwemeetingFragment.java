@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,10 +27,7 @@ import android.widget.TimePicker;
 
 public class NieuwemeetingFragment extends Fragment implements OnClickListener {
 
-	//private static final int TTS_DATA_CHECK = 0;
 	private int id = 0;
-	private TextToSpeech tts;
-	protected boolean ttsIsInit;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
