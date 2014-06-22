@@ -4,7 +4,7 @@
     <string name="gewicht">Gewicht:</string>
     <string name="weight_lost">Afgevallen:</string>
     <string name="weight_gained">Aangekomen:</string>
-    <string name="actie_nieuw">Nieuwe weging toevoegen</string>
+    <string name="action_new">Nieuwe weging</string>
     <string name="done">Opslaan</string>
     <string name="discard">Annuleren</string>
     <string name="weight">Gewicht</string>
