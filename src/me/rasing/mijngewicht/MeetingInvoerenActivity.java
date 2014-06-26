@@ -7,10 +7,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import me.rasing.mijngewicht.providers.GewichtProvider;
 import android.app.ActionBar;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -80,11 +81,9 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 			editText.setError("Vul je gewicht in.");
 			return;
 		}
-		
-		// Gets the data repository in write mode
-		DbHelper mDbHelper = new DbHelper(getBaseContext());
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+		ContentResolver mResolver = this.getContentResolver();
+		
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 		try {
@@ -104,17 +103,16 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 				String selection = Metingen._ID + "=?";
 				String[] selectionArgs = { String.valueOf(id) };
 
-				db.update(
-						Metingen.TABLE_NAME,
+				mResolver.update(
+						GewichtProvider.METINGEN_URI,
 						values,
 						selection,
 						selectionArgs);
 			} else {
 				// Insert the new row, returning the primary key value of the new row
 				values.put(Metingen.COLUMN_NAME_GUID, UUID.randomUUID().toString());
-				db.insert(
-						Metingen.TABLE_NAME,
-						null,
+				mResolver.insert(
+						GewichtProvider.METINGEN_URI,
 						values);
 
 			}
@@ -122,8 +120,6 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		db.close();
 		
 		// Schedule notification.
 		NotificationScheduler notificationScheduler = new NotificationScheduler();
