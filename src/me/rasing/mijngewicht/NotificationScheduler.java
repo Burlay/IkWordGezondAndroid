@@ -1,13 +1,22 @@
 package me.rasing.mijngewicht;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import me.rasing.mijngewicht.providers.GewichtProvider;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri.Builder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -47,13 +56,39 @@ public class NotificationScheduler extends BroadcastReceiver {
 
     public void ScheduleNotification(Context context)
     {
+		String[] projection = {Metingen.COLUMN_NAME_DATUM};
+
+        Builder b = GewichtProvider.METINGEN_URI.buildUpon();
+        b.appendQueryParameter("LIMIT", "1");
+		ContentResolver mResolver = context.getContentResolver();
+		Cursor cursor = mResolver.query(
+				b.build(),
+				projection,
+				null,
+				null,
+				Metingen.COLUMN_NAME_DATUM + " DESC");
+		
+		cursor.moveToFirst();
+		String dateString = cursor.getString(cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
+		SimpleDateFormat format = 
+				new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
+		Date lastWeighing = null;
+		try {
+			lastWeighing = format.parse(dateString);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(lastWeighing.getTime());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        
         Intent intent = new Intent("me.rasing.mijngewicht.SCHEDULE_NOTIFICATION");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calendar.add(Calendar.DAY_OF_MONTH, 7);
         
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
