@@ -6,12 +6,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Period;
+
 import me.rasing.mijngewicht.DbHelper;
 import me.rasing.mijngewicht.Metingen;
+import me.rasing.mijngewicht.providers.GewichtProvider;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri.Builder;
 import android.preference.PreferenceManager;
 import android.webkit.JavascriptInterface;
 
@@ -142,6 +148,34 @@ public class MeasurementsModel {
 		return weightUnit;
 	}
 	
+	public Integer getDaysSinceLastWeighing() {
+		String[] projection = { Metingen.COLUMN_NAME_DATUM };
+		Builder b = GewichtProvider.METINGEN_URI.buildUpon();
+		b.appendQueryParameter("LIMIT", "1");
+		Cursor c = context.getContentResolver().query(b.build(), projection,
+				null, null, Metingen.COLUMN_NAME_DATUM + " DESC");
+
+		if (c.getCount() != 0) {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ",
+					Locale.getDefault());
+			DateTime now = DateTime.now();
+			c.moveToFirst();
+			final String datum = c.getString(c
+					.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
+			Date d;
+			try {
+				d = format.parse(datum);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
+			DateTime dateTime = d == null ? null : new DateTime(d);
+			Period p = Days.daysBetween(dateTime.withTimeAtStartOfDay(),
+					now.withTimeAtStartOfDay()).toPeriod();
+			return p.getDays();
+		}
+		return null;
+	}
+
 	@JavascriptInterface
 	public String getMeasurementsAsJSON() {
 		DbHelper mDbHelper = new DbHelper(context);
