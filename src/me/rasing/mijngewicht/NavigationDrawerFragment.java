@@ -1,26 +1,13 @@
 package me.rasing.mijngewicht;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import me.rasing.mijngewicht.models.MeasurementsModel;
-import me.rasing.mijngewicht.providers.GewichtProvider;
-
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Period;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.net.Uri.Builder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -65,8 +52,6 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-	private ContentResolver mContentResolver;
-
     public NavigationDrawerFragment() {
     }
 
@@ -83,8 +68,6 @@ public class NavigationDrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
-        
-        mContentResolver = this.getActivity().getContentResolver();
 
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
