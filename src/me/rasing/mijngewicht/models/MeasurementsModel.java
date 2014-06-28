@@ -13,6 +13,7 @@ import org.joda.time.Period;
 import me.rasing.mijngewicht.DbHelper;
 import me.rasing.mijngewicht.Metingen;
 import me.rasing.mijngewicht.providers.GewichtProvider;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -24,79 +25,63 @@ import android.webkit.JavascriptInterface;
 public class MeasurementsModel {
 
 	private final Context context;
+	private final ContentResolver mContentResolver;
 
 	public MeasurementsModel(Context context) {
 		this.context = context;
+		this.mContentResolver = context.getContentResolver();
 	}
 
 	private float getCurrentWeight() {
 		return getCurrentWeight("kg");
 	}
 	
-	public float getCurrentWeight(String weightUnit) {
-		DbHelper mDbHelper = new DbHelper(context);
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-		String[] projection = {
-				Metingen.COLUMN_NAME_GEWICHT,
-				};
-
-		Cursor cursor = db.query(Metingen.TABLE_NAME, // The table to query
-				projection, // The columns to return
-				null, // The columns for the WHERE clause
-				null, // The values for the WHERE clause
-				null, // don't group the rows
-				null, // don't filter by row groups
-				Metingen.COLUMN_NAME_DATUM + " DESC",
-				"1");
+	public Float getCurrentWeight(String weightUnit) {
+		String[] projection = { Metingen.COLUMN_NAME_GEWICHT };
+		Builder b = GewichtProvider.METINGEN_URI.buildUpon();
+		b.appendQueryParameter("LIMIT", "1");
+		Cursor c = mContentResolver.query(b.build(), projection,
+				null, null, Metingen.COLUMN_NAME_DATUM + " DESC");
 		
-		cursor.moveToFirst();
-		float weight = cursor.getFloat( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
-		cursor.close();
-		db.close();
-		
-		float result = ( weightUnit.equals("kg") ) ? weight : localizeWeight(weight, weightUnit);
-		
-		return result;
-	}
-
-	public float getTotalWeightDifference(String weightUnit) {
-		float currentWeight = this.getCurrentWeight(weightUnit);
-		float startingWeight = this.getStartingWeight(weightUnit);
-		
-		return currentWeight - startingWeight;
-	}
-
-	public float getStartingWeight(String weightUnit) {
-		DbHelper mDbHelper = new DbHelper(context);
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-		String[] projection = {
-				Metingen.COLUMN_NAME_GEWICHT,
-				};
-
-		Cursor cursor = db.query(Metingen.TABLE_NAME, // The table to query
-				projection, // The columns to return
-				null, // The columns for the WHERE clause
-				null, // The values for the WHERE clause
-				null, // don't group the rows
-				null, // don't filter by row groups
-				Metingen.COLUMN_NAME_DATUM + " ASC",
-				"1");
-		
-		cursor.moveToFirst();
-		float weight = cursor.getFloat( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
-		cursor.close();
-		db.close();
-		
-		float result = 0;
-		if ( "lb".equals(weightUnit) ) {
-			result = (float) (weight * 2.2);
-		} else {
-			result = weight;
+		if (c.getCount() == 0) {
+			c.close();
+			return null;
 		}
 		
-		return result;
+		c.moveToFirst();
+		Float weight = c.getFloat(c.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ));
+		c.close();
+		
+		return localizeWeight(weight, weightUnit);
+	}
+
+	public Float getTotalWeightDifference(String weightUnit) {
+		Float currentWeight = this.getCurrentWeight(weightUnit);
+		Float startingWeight = this.getStartingWeight(weightUnit);
+		
+		if (currentWeight != null && startingWeight != null) {
+			return currentWeight - startingWeight;
+		} else {
+			return null;
+		}
+	}
+
+	public Float getStartingWeight(String weightUnit) {
+		String[] projection = { Metingen.COLUMN_NAME_GEWICHT };
+		Builder b = GewichtProvider.METINGEN_URI.buildUpon();
+		b.appendQueryParameter("LIMIT", "1");
+		Cursor c = mContentResolver.query(b.build(), projection,
+				null, null, Metingen.COLUMN_NAME_DATUM + " ASC");
+		
+		if (c.getCount() == 0) {
+			c.close();
+			return null;
+		}
+		
+		c.moveToFirst();
+		Float weight = c.getFloat( c.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
+		c.close();
+		return localizeWeight(weight, weightUnit);
 	}
 
 	public float getBMI(float length) {
@@ -171,8 +156,10 @@ public class MeasurementsModel {
 			DateTime dateTime = d == null ? null : new DateTime(d);
 			Period p = Days.daysBetween(dateTime.withTimeAtStartOfDay(),
 					now.withTimeAtStartOfDay()).toPeriod();
+			c.close();
 			return p.getDays();
 		}
+		c.close();
 		return null;
 	}
 

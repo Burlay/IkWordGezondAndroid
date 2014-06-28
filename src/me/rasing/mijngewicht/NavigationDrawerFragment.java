@@ -101,33 +101,40 @@ public class NavigationDrawerFragment extends Fragment {
         
     	DecimalFormat df = new DecimalFormat("#.##");
     	Float weight = measurements.getCurrentWeight("kg");
-    	TextView weightView = (TextView) mNavDrawer.findViewById(R.id.nav_weight);
-    	weightView.setText(df.format(weight).toString() + " kg");
-    	
-    	TextView weightLost = (TextView) mNavDrawer.findViewById(R.id.nav_weightlost);
-    	Float weightDifference = measurements.getTotalWeightDifference("kg");//previousWeight>=weight?previousWeight-weight:weight-previousWeight;
-    	String weightMessage = weightDifference<=0?"afgevallen":"aangekomen";
-    	
-    	weightLost.setText(df.format(Math.abs(weightDifference)).toString() + " kg " + weightMessage );
-    	
-    	String lastWeighing = "";
-    	int days = measurements.getDaysSinceLastWeighing();
-    	if (days == 0) {
-    		lastWeighing = "Vandaag gowogen.";
-    	} else if (days == 1) {
-    		lastWeighing = "Gisteren gewogen";
-    	} else if (days == 2) {
-    		lastWeighing = "Eergisteren gewogen.";
-    	} else if (days > 2 && days < 7) {
-    		lastWeighing = days + " dagen geleden gewogen.";
-    	} else if (days >= 7 && days <= 13) {
-    		lastWeighing = "Vorige week gewogen.";
-    	} else if (days >= 14) {
-    		lastWeighing = days / 7 + " weken geleden gewogen.";
+    	if (weight != null) {
+    		TextView weightView = (TextView) mNavDrawer.findViewById(R.id.nav_weight);
+    		weightView.setText(df.format(weight).toString() + " kg");
     	}
     	
-    	TextView lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
-    	lastWeighingView.setText(lastWeighing);
+    	Float weightDifference = measurements.getTotalWeightDifference("kg");//previousWeight>=weight?previousWeight-weight:weight-previousWeight;
+    	if (weight != null) {
+	    	TextView weightLost = (TextView) mNavDrawer.findViewById(R.id.nav_weightlost);
+	    	String weightMessage = weightDifference<=0?"afgevallen":"aangekomen";
+	    	weightLost.setText(df.format(Math.abs(weightDifference)).toString() + " kg " + weightMessage );
+    	}
+
+    	Integer days = measurements.getDaysSinceLastWeighing();
+    	if (days != null) {
+	    	String lastWeighing = "";
+	    	if (days == 0) {
+	    		lastWeighing = "Vandaag gowogen.";
+	    	} else if (days == 1) {
+	    		lastWeighing = "Gisteren gewogen";
+	    	} else if (days == 2) {
+	    		lastWeighing = "Eergisteren gewogen.";
+	    	} else if (days > 2 && days < 7) {
+	    		lastWeighing = days + " dagen geleden gewogen.";
+	    	} else if (days >= 7 && days <= 13) {
+	    		lastWeighing = "Vorige week gewogen.";
+	    	} else if (days >= 14) {
+	    		lastWeighing = days / 7 + " weken geleden gewogen.";
+	    	}
+	    	TextView lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
+	    	lastWeighingView.setText(lastWeighing);
+    	} else {
+	    	TextView lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
+	    	lastWeighingView.setText("Nog niet gewogen.");
+    	}
         
         return mNavDrawer;
     }
