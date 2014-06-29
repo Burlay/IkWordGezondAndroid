@@ -21,8 +21,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class NavigationDrawerFragment extends Fragment {
-
+public class NavigationDrawerFragment extends Fragment implements MeasurementsModel.Callback {
     /**
      * Remember the position of the selected item.
      */
@@ -52,6 +51,14 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+	private MeasurementsModel measurements;
+
+	private TextView weightView;
+
+	private TextView weightLostView;
+
+	private TextView lastWeighingView;
+
     public NavigationDrawerFragment() {
     }
 
@@ -71,6 +78,8 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition);
+        measurements = new MeasurementsModel(this.getActivity());
+        measurements.registerCallback(this);
     }
 
     @Override
@@ -78,6 +87,7 @@ public class NavigationDrawerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+        getLoaderManager().initLoader(0, null, measurements);
     }
 
     @Override
@@ -96,46 +106,11 @@ public class NavigationDrawerFragment extends Fragment {
 			public void onClick(View v) {
 				selectItem(1);
 			}});
-        
-        MeasurementsModel measurements = new MeasurementsModel(this.getActivity()); 
-        
-    	DecimalFormat df = new DecimalFormat("#.##");
-    	Float weight = measurements.getCurrentWeight("kg");
-    	if (weight != null) {
-    		TextView weightView = (TextView) mNavDrawer.findViewById(R.id.nav_weight);
-    		weightView.setText(df.format(weight).toString() + " kg");
-    	}
-    	
-    	Float weightDifference = measurements.getTotalWeightDifference("kg");//previousWeight>=weight?previousWeight-weight:weight-previousWeight;
-    	if (weight != null) {
-	    	TextView weightLost = (TextView) mNavDrawer.findViewById(R.id.nav_weightlost);
-	    	String weightMessage = weightDifference<=0?"afgevallen":"aangekomen";
-	    	weightLost.setText(df.format(Math.abs(weightDifference)).toString() + " kg " + weightMessage );
-    	}
-
-    	Integer days = measurements.getDaysSinceLastWeighing();
-    	if (days != null) {
-	    	String lastWeighing = "";
-	    	if (days == 0) {
-	    		lastWeighing = "Vandaag gowogen.";
-	    	} else if (days == 1) {
-	    		lastWeighing = "Gisteren gewogen";
-	    	} else if (days == 2) {
-	    		lastWeighing = "Eergisteren gewogen.";
-	    	} else if (days > 2 && days < 7) {
-	    		lastWeighing = days + " dagen geleden gewogen.";
-	    	} else if (days >= 7 && days <= 13) {
-	    		lastWeighing = "Vorige week gewogen.";
-	    	} else if (days >= 14) {
-	    		lastWeighing = days / 7 + " weken geleden gewogen.";
-	    	}
-	    	TextView lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
-	    	lastWeighingView.setText(lastWeighing);
-    	} else {
-	    	TextView lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
-	    	lastWeighingView.setText("Nog niet gewogen.");
-    	}
-        
+       
+    	weightView = (TextView) mNavDrawer.findViewById(R.id.nav_weight);
+	    weightLostView = (TextView) mNavDrawer.findViewById(R.id.nav_weightlost);
+	    lastWeighingView = (TextView) mNavDrawer.findViewById(R.id.nav_last_weighing);
+	    
         return mNavDrawer;
     }
 
@@ -277,4 +252,43 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
     }
+
+	@Override
+	public void MeasurementsModelCallback() {
+		this.drawLabels();
+	}
+
+	private void drawLabels() {
+    	DecimalFormat df = new DecimalFormat("#.##");
+    	Float weight = measurements.getCurrentWeight("kg");
+    	if (weight != null) 
+    		weightView.setText(df.format(weight).toString() + " kg");
+    		
+    	Float weightDifference = measurements.getTotalWeightDifference("kg");//previousWeight>=weight?previousWeight-weight:weight-previousWeight;
+    	if (weight != null) {
+	    	String weightMessage = weightDifference<=0?"afgevallen":"aangekomen";
+	    	weightLostView.setText(df.format(Math.abs(weightDifference)).toString() + " kg " + weightMessage );
+    	}
+    	
+    	Integer days = measurements.getDaysSinceLastWeighing();
+    	if (days != null) {
+	    	String lastWeighing = "";
+	    	if (days == 0) {
+	    		lastWeighing = "Vandaag gowogen.";
+	    	} else if (days == 1) {
+	    		lastWeighing = "Gisteren gewogen";
+	    	} else if (days == 2) {
+	    		lastWeighing = "Eergisteren gewogen.";
+	    	} else if (days > 2 && days < 7) {
+	    		lastWeighing = days + " dagen geleden gewogen.";
+	    	} else if (days >= 7 && days <= 13) {
+	    		lastWeighing = "Vorige week gewogen.";
+	    	} else if (days >= 14) {
+	    		lastWeighing = days / 7 + " weken geleden gewogen.";
+	    	}
+	    	lastWeighingView.setText(lastWeighing);
+    	} else {
+	    	lastWeighingView.setText("Nog niet gewogen.");
+    	}
+	}
 }

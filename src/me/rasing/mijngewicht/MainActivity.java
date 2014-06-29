@@ -4,7 +4,7 @@ import me.rasing.mijngewicht.fragments.BlankstateFragment;
 import me.rasing.mijngewicht.fragments.HistoryFragment;
 import me.rasing.mijngewicht.providers.GewichtProvider;
 import android.app.ActionBar;
-import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -84,7 +84,7 @@ public class MainActivity extends FragmentActivity
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentManager fragmentManager = getFragmentManager();
 		mTitle = getResources().getStringArray(R.array.drawer_items)[position];
 		
     	switch (position) {

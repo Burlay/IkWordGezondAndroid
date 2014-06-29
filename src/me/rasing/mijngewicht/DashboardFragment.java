@@ -8,7 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,9 +20,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements MeasurementsModel.Callback {
 
 	private WebView webView;
+	private TextView txtWeight;
+	private TextView mTotaal;
+	private TextView txtTotalLost;
+	private MeasurementsModel measurements;
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -41,13 +45,6 @@ public class DashboardFragment extends Fragment {
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			WebView.setWebContentsDebuggingEnabled(true);
 		}
-		this.createGraph(webView);
-
-		return rootView;
-	}
-	
-	@SuppressLint("SetJavaScriptEnabled")
-	private void createGraph(WebView webView2) {
 		WebSettings settings= webView.getSettings();
 		settings.setJavaScriptEnabled(true);
 		webView.addJavascriptInterface(new MeasurementsModel(this.getActivity().getApplicationContext()), "MeasurementsModel");
@@ -61,6 +58,18 @@ public class DashboardFragment extends Fragment {
 			}
 		});
 		
+		txtWeight = (TextView) rootView.findViewById(R.id.fragmentDashboardWeight);
+		mTotaal = (TextView) rootView.findViewById(R.id.fragmentDashboardTotalLostText);
+		txtTotalLost = (TextView) rootView.findViewById(R.id.fragmentDashboardTotalLost);
+		
+		measurements = new MeasurementsModel(this.getActivity());
+		measurements.registerCallback(this);
+
+		return rootView;
+	}
+	
+	@SuppressLint("SetJavaScriptEnabled")
+	private void createGraph() {
 		DbHelper mDbHelper = new DbHelper(this.getActivity());
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
@@ -96,31 +105,35 @@ public class DashboardFragment extends Fragment {
 			}
 		}
 	}
-	
-    // TODO Move database access of the UI thread
-    @Override
-	public void onResume() {
-        DecimalFormat formatter = new DecimalFormat("#.##");
-    	
-    	MeasurementsModel measurements = new MeasurementsModel(this.getActivity().getApplicationContext());
-    	//Context context = this.getActivity().getApplicationContext();
-    	
-    	String weightUnit = measurements.getWeightUnit();
-    	
-    	float currentWeight = measurements.getCurrentWeight(weightUnit);
-		TextView txtWeight = (TextView) getActivity().findViewById(R.id.fragmentDashboardWeight);
-		txtWeight.setText(formatter.format(currentWeight) + " " + weightUnit);
 
-		float weightDifference = measurements.getTotalWeightDifference(weightUnit);
-		TextView mTotaal = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLostText);
-		if (weightDifference <= 0 ) {
-			mTotaal.setText(R.string.weight_lost);
-		} else if (weightDifference > 0 ) {
-			mTotaal.setText(R.string.weight_gained);
+	@Override
+	public void MeasurementsModelCallback() {
+		this.onDataChanged();
+	}
+
+	private void onDataChanged() {
+		DecimalFormat formatter = new DecimalFormat("#.##");
+		String weightUnit = "kg";
+		
+		Float currentWeight = measurements.getCurrentWeight(weightUnit);
+		if (currentWeight != null)
+			txtWeight.setText(formatter.format(currentWeight) + " " + weightUnit);
+		
+		Float weightDifference = measurements.getTotalWeightDifference(weightUnit);
+		if (weightDifference != null) {
+			if (weightDifference <= 0 ) {
+				mTotaal.setText(R.string.weight_lost);
+			} else if (weightDifference > 0 ) {
+				mTotaal.setText(R.string.weight_gained);
+			}
+			txtTotalLost.setText(formatter.format(Math.abs(weightDifference)) + " " + weightUnit);
 		}
-		TextView txtTotalLost = (TextView) getActivity().findViewById(R.id.fragmentDashboardTotalLost);
-    	txtTotalLost.setText(formatter.format(Math.abs(weightDifference)) + " " + weightUnit);
-    	
-		super.onResume();
-    }
+		createGraph();
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(0, null, measurements);
+	}
 }

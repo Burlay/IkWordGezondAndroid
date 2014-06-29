@@ -6,27 +6,38 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import me.rasing.mijngewicht.DbHelper;
+import me.rasing.mijngewicht.Metingen;
+import me.rasing.mijngewicht.providers.GewichtProvider;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Period;
 
-import me.rasing.mijngewicht.DbHelper;
-import me.rasing.mijngewicht.Metingen;
-import me.rasing.mijngewicht.providers.GewichtProvider;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri.Builder;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.webkit.JavascriptInterface;
 
-public class MeasurementsModel {
+public class MeasurementsModel implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	private final Context context;
 	private final ContentResolver mContentResolver;
+	private Callback callbacks;
+	private Cursor cursor;
 
+	public interface Callback {
+		public void MeasurementsModelCallback();
+	}
+	
 	public MeasurementsModel(Context context) {
 		this.context = context;
 		this.mContentResolver = context.getContentResolver();
@@ -37,20 +48,11 @@ public class MeasurementsModel {
 	}
 	
 	public Float getCurrentWeight(String weightUnit) {
-		String[] projection = { Metingen.COLUMN_NAME_GEWICHT };
-		Builder b = GewichtProvider.METINGEN_URI.buildUpon();
-		b.appendQueryParameter("LIMIT", "1");
-		Cursor c = mContentResolver.query(b.build(), projection,
-				null, null, Metingen.COLUMN_NAME_DATUM + " DESC");
-		
-		if (c.getCount() == 0) {
-			c.close();
+		if (cursor.getCount() == 0)
 			return null;
-		}
-		
-		c.moveToFirst();
-		Float weight = c.getFloat(c.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ));
-		c.close();
+
+		cursor.moveToFirst();
+		Float weight = cursor.getFloat(cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ));
 		
 		return localizeWeight(weight, weightUnit);
 	}
@@ -67,20 +69,12 @@ public class MeasurementsModel {
 	}
 
 	public Float getStartingWeight(String weightUnit) {
-		String[] projection = { Metingen.COLUMN_NAME_GEWICHT };
-		Builder b = GewichtProvider.METINGEN_URI.buildUpon();
-		b.appendQueryParameter("LIMIT", "1");
-		Cursor c = mContentResolver.query(b.build(), projection,
-				null, null, Metingen.COLUMN_NAME_DATUM + " ASC");
-		
-		if (c.getCount() == 0) {
-			c.close();
+		if (cursor.getCount() == 0)
 			return null;
-		}
 		
-		c.moveToFirst();
-		Float weight = c.getFloat( c.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
-		c.close();
+		cursor.moveToLast();
+		Float weight = cursor.getFloat( cursor.getColumnIndexOrThrow( Metingen.COLUMN_NAME_GEWICHT ) );
+
 		return localizeWeight(weight, weightUnit);
 	}
 
@@ -134,33 +128,24 @@ public class MeasurementsModel {
 	}
 	
 	public Integer getDaysSinceLastWeighing() {
-		String[] projection = { Metingen.COLUMN_NAME_DATUM };
-		Builder b = GewichtProvider.METINGEN_URI.buildUpon();
-		b.appendQueryParameter("LIMIT", "1");
-		Cursor c = context.getContentResolver().query(b.build(), projection,
-				null, null, Metingen.COLUMN_NAME_DATUM + " DESC");
-
-		if (c.getCount() != 0) {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ",
-					Locale.getDefault());
-			DateTime now = DateTime.now();
-			c.moveToFirst();
-			final String datum = c.getString(c
-					.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
-			Date d;
-			try {
-				d = format.parse(datum);
-			} catch (ParseException e) {
-				throw new RuntimeException(e);
-			}
-			DateTime dateTime = d == null ? null : new DateTime(d);
-			Period p = Days.daysBetween(dateTime.withTimeAtStartOfDay(),
-					now.withTimeAtStartOfDay()).toPeriod();
-			c.close();
-			return p.getDays();
+		if (cursor.getCount() == 0)
+				return null;
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ",
+				Locale.getDefault());
+		DateTime now = DateTime.now();
+		cursor.moveToFirst();
+		final String datum = cursor.getString(cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
+		Date d;
+		try {
+			d = format.parse(datum);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
 		}
-		c.close();
-		return null;
+		DateTime dateTime = d == null ? null : new DateTime(d);
+		Period p = Days.daysBetween(dateTime.withTimeAtStartOfDay(),
+				now.withTimeAtStartOfDay()).toPeriod();
+		return p.getDays();
 	}
 
 	@JavascriptInterface
@@ -211,5 +196,39 @@ public class MeasurementsModel {
     	db.close();
     	
 		return data;
+	}
+
+	public void registerContentObserver(
+			ContentObserver observer) {
+		mContentResolver.registerContentObserver(GewichtProvider.METINGEN_URI, true, observer);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		String[] projection = { Metingen.COLUMN_NAME_GEWICHT,
+				Metingen.COLUMN_NAME_DATUM };
+
+		CursorLoader cursorLoader = new CursorLoader(this.context,
+				GewichtProvider.METINGEN_URI, projection, null, null,
+				Metingen.COLUMN_NAME_DATUM + " DESC");
+
+		return cursorLoader;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		this.cursor = data;
+		this.callbacks.MeasurementsModelCallback();
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		this.cursor = null;
+		//this.callbacks.MeasurementsModelCallback();
+	}
+
+	public void registerCallback(
+			MeasurementsModel.Callback callback) {
+		this.callbacks = callback;
 	}
 }
