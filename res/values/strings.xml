@@ -23,4 +23,34 @@
         <item>@string/profiel</item>
         <item>@string/settings</item>
     </string-array>
+    
+    <!-- Preferences -->
+    <string name="weight_unit">Gewichtseenheid</string>
+    <string-array name="weight_unit_options">
+        <item>Kilogrammen</item>
+        <item>Ponden</item>
+    </string-array>
+    <string-array name="weight_unit_values">
+        <item>kg</item>
+        <item>lb</item>
+    </string-array>
+    <string-array name="length_unit">
+        <item>Meters</item>
+        <item>Yards</item>
+    </string-array>
+    <string-array name="length_unit_values">
+        <item>m</item>
+        <item>yd</item>
+    </string-array>
+    
+    <string name="gender">Geslacht</string>
+    <string name="birthdate">Geboortedatum</string>
+    <string-array name="genders">
+        <item>Man</item>
+        <item>Vrouw</item>
+    </string-array>
+    <string-array name="genders_values">
+        <item>m</item>
+        <item>f</item>
+    </string-array>
 </resources>

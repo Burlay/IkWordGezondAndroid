@@ -5,7 +5,7 @@
         android:id="@+id/actie_delete"
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_delete"
-        android:title="@string/actie_nieuw"
+        android:title="@string/action_new"
         android:showAsAction="ifRoom" />
 
 </menu>
