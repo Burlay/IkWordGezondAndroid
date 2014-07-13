@@ -6,6 +6,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Period;
+
 import me.rasing.mijngewicht.providers.GewichtProvider;
 
 import android.app.AlarmManager;
@@ -24,42 +28,10 @@ public class NotificationScheduler extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(context)
-		        .setSmallIcon(R.drawable.ic_stat_mg)
-		        .setContentTitle("My notification")
-		        .setContentText("Hello World!");
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(context, MeetingInvoerenActivity.class);
-
-		// The stack builder object will contain an artificial back stack for the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(MainActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent =
-		        stackBuilder.getPendingIntent(
-		            0,
-		            PendingIntent.FLAG_UPDATE_CURRENT
-		        );
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager =
-		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		int mId = 0;
-		mNotificationManager.notify(mId, mBuilder.build());
-	}
-
-    public void ScheduleNotification(Context context)
-    {
 		String[] projection = {Metingen.COLUMN_NAME_DATUM};
 
-        Builder b = GewichtProvider.METINGEN_URI.buildUpon();
-        b.appendQueryParameter("LIMIT", "1");
+		Builder b = GewichtProvider.METINGEN_URI.buildUpon();
+		b.appendQueryParameter("LIMIT", "1");
 		ContentResolver mResolver = context.getContentResolver();
 		Cursor cursor = mResolver.query(
 				b.build(),
@@ -67,7 +39,7 @@ public class NotificationScheduler extends BroadcastReceiver {
 				null,
 				null,
 				Metingen.COLUMN_NAME_DATUM + " DESC");
-		
+
 		cursor.moveToFirst();
 		String dateString = cursor.getString(cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
 		SimpleDateFormat format = 
@@ -76,29 +48,56 @@ public class NotificationScheduler extends BroadcastReceiver {
 		try {
 			lastWeighing = format.parse(dateString);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(lastWeighing.getTime());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.add(Calendar.DAY_OF_MONTH, 7);
-        
-        Intent intent = new Intent("me.rasing.mijngewicht.SCHEDULE_NOTIFICATION");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-    }
+		DateTime dateTime = lastWeighing==null?null:new DateTime(lastWeighing);
+		Period p = Days.daysBetween(dateTime.withTimeAtStartOfDay(), DateTime.now().withTimeAtStartOfDay()).toPeriod();
+		
+		if (p.getDays() >= 7) {
+			NotificationCompat.Builder mBuilder =
+					new NotificationCompat.Builder(context)
+			.setSmallIcon(R.drawable.ic_stat_mg)
+			.setContentTitle("My notification")
+			.setContentText("Hello World!");
+			// Creates an explicit intent for an Activity in your app
+			Intent resultIntent = new Intent(context, MeetingInvoerenActivity.class);
 
-    public void CancelNotification(Context context)
-    {
-        Intent intent = new Intent(context, NotificationScheduler.class);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(sender);
+			// The stack builder object will contain an artificial back stack for the
+			// started Activity.
+			// This ensures that navigating backward from the Activity leads out of
+			// your application to the Home screen.
+			TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+			// Adds the back stack for the Intent (but not the Intent itself)
+			stackBuilder.addParentStack(MainActivity.class);
+			// Adds the Intent that starts the Activity to the top of the stack
+			stackBuilder.addNextIntent(resultIntent);
+			PendingIntent resultPendingIntent =
+					stackBuilder.getPendingIntent(
+							0,
+							PendingIntent.FLAG_UPDATE_CURRENT
+							);
+			mBuilder.setContentIntent(resultPendingIntent);
+			NotificationManager mNotificationManager =
+					(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+			// mId allows you to update the notification later on.
+			int mId = 0;
+			mNotificationManager.notify(mId, mBuilder.build());
+		}
+		
+
+	}
+    
+    public void ScheduleRepeatingNotification(Context context) {
+    	Intent intent = new Intent("me.rasing.mijngewicht.SCHEDULE_NOTIFICATION");
+    	PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+    	Calendar calendar = Calendar.getInstance();
+    	calendar.set(Calendar.HOUR_OF_DAY, 0);
+    	calendar.set(Calendar.MINUTE, 0);
+    	calendar.set(Calendar.SECOND, 0);
+
+    	AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    	alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 }

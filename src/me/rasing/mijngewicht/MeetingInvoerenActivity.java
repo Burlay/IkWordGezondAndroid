@@ -121,10 +121,6 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 			e.printStackTrace();
 		}
 		
-		// Schedule notification.
-		NotificationScheduler notificationScheduler = new NotificationScheduler();
-		notificationScheduler.ScheduleNotification(getBaseContext());
-		
 		finish();
 	}
 }
