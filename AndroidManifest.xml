@@ -8,6 +8,8 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
     
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    
 	<permission
 	    android:name="me.rasing.mijngewicht.providers.GewichtProvider.ReadWrite"
 	    android:protectionLevel = "signature" />
@@ -16,7 +18,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Mijngewicht" >
+        android:theme="@style/Theme.Mijngewicht"
+        android:name="me.rasing.mijngewicht.MyApplication">
         <activity
             android:name="me.rasing.mijngewicht.MainActivity"
             android:label="@string/app_name">
@@ -46,6 +49,11 @@
 		<receiver android:name=".NotificationScheduler" android:exported="false">
 		    <intent-filter>
 		        <action android:name="me.rasing.mijngewicht.SCHEDULE_NOTIFICATION"></action>
+		    </intent-filter>
+		</receiver>
+		<receiver android:name=".AutoStart">
+		    <intent-filter>
+		        <action android:name="android.intent.action.BOOT_COMPLETED"/>
 		    </intent-filter>
 		</receiver>
     </application>
