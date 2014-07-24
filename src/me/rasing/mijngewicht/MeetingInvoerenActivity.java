@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import me.rasing.mijngewicht.providers.GewichtProvider;
 import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -120,6 +121,11 @@ public class MeetingInvoerenActivity extends FragmentActivity implements OnClick
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+
+	    String ns = Context.NOTIFICATION_SERVICE;
+	    NotificationManager nMgr = (NotificationManager) this.getSystemService(ns);
+	    nMgr.cancel(0);
 		
 		finish();
 	}
