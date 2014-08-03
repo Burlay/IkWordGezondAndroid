@@ -67,23 +67,13 @@ public class NotificationScheduler extends BroadcastReceiver {
 			.setLargeIcon(blankBitmap)
 			.setContentTitle("Vandaag wegen")
 			.setContentText("Weeg jezelf wekelijks voor het beste resultaat.");
-			// Creates an explicit intent for an Activity in your app
-			Intent resultIntent = new Intent(context, MeetingInvoerenActivity.class);
 
-			// The stack builder object will contain an artificial back stack for the
-			// started Activity.
-			// This ensures that navigating backward from the Activity leads out of
-			// your application to the Home screen.
+			Intent resultIntent = new Intent(context, MeetingInvoerenActivity.class);
 			TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-			// Adds the back stack for the Intent (but not the Intent itself)
-			stackBuilder.addParentStack(MainActivity.class);
-			// Adds the Intent that starts the Activity to the top of the stack
+			stackBuilder.addParentStack(MeetingInvoerenActivity.class);
 			stackBuilder.addNextIntent(resultIntent);
 			PendingIntent resultPendingIntent =
-					stackBuilder.getPendingIntent(
-							0,
-							PendingIntent.FLAG_UPDATE_CURRENT
-							);
+					stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 			mBuilder.setContentIntent(resultPendingIntent);
 			NotificationManager mNotificationManager =
 					(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

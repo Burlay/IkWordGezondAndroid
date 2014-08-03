@@ -28,33 +28,51 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
-            android:name="me.rasing.mijngewicht.MetingenDetailActivity" >
+            android:name="me.rasing.mijngewicht.MetingenDetailActivity"
+            android:parentActivityName="me.rasing.mijngewicht.MainActivity">
+		    <meta-data
+		        android:name="android.support.PARENT_ACTIVITY"
+		        android:value="me.rasing.mijngewicht.MainActivity"/>
         </activity>
+        
         <activity
-            android:name="me.rasing.mijngewicht.MeetingInvoerenActivity" >
+            android:name="me.rasing.mijngewicht.MeetingInvoerenActivity"
+            android:parentActivityName="me.rasing.mijngewicht.MainActivity">
+		    <meta-data
+		        android:name="android.support.PARENT_ACTIVITY"
+		        android:value="me.rasing.mijngewicht.MainActivity"/>
         </activity>
+        
 		<activity android:name=".PreferencesActivity"
 		    android:label="@string/settings"
 		    android:parentActivityName="me.rasing.mijngewicht.MainActivity" >
+		    <meta-data
+		        android:name="android.support.PARENT_ACTIVITY"
+		        android:value="me.rasing.mijngewicht.MainActivity"/>
 		    <intent-filter>
 		        <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		    </intent-filter>
 		</activity>
+		
 		<provider
 		    android:name="me.rasing.mijngewicht.providers.GewichtProvider" 
 		    android:authorities="me.rasing.mijngewicht.providers.GewichtProvider"
 		    android:permission="me.rasing.mijngewicht.providers.GewichtProvider.ReadWrite" />
+		
 		<receiver android:name=".NotificationScheduler" android:exported="false">
 		    <intent-filter>
 		        <action android:name="me.rasing.mijngewicht.SCHEDULE_NOTIFICATION"></action>
 		    </intent-filter>
 		</receiver>
+		
 		<receiver android:name=".AutoStart">
 		    <intent-filter>
 		        <action android:name="android.intent.action.BOOT_COMPLETED"/>
 		    </intent-filter>
 		</receiver>
+		
     </application>
 </manifest>
