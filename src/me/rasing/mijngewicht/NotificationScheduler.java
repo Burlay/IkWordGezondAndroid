@@ -20,6 +20,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri.Builder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -55,11 +58,15 @@ public class NotificationScheduler extends BroadcastReceiver {
 		Period p = Days.daysBetween(dateTime.withTimeAtStartOfDay(), DateTime.now().withTimeAtStartOfDay()).toPeriod();
 		
 		if (p.getDays() >= 7) {
+			Drawable blankDrawable = context.getResources().getDrawable(R.drawable.notification_large_icon);
+		    Bitmap blankBitmap=((BitmapDrawable)blankDrawable).getBitmap();
+		    
 			NotificationCompat.Builder mBuilder =
 					new NotificationCompat.Builder(context)
 			.setSmallIcon(R.drawable.ic_stat_mg)
-			.setContentTitle("My notification")
-			.setContentText("Hello World!");
+			.setLargeIcon(blankBitmap)
+			.setContentTitle("Vandaag wegen")
+			.setContentText("Weeg jezelf wekelijks voor het beste resultaat.");
 			// Creates an explicit intent for an Activity in your app
 			Intent resultIntent = new Intent(context, MeetingInvoerenActivity.class);
 
