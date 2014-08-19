@@ -44,6 +44,9 @@ public class NotificationScheduler extends BroadcastReceiver {
 				Metingen.COLUMN_NAME_DATUM + " DESC");
 
 		cursor.moveToFirst();
+		if (cursor.getCount() < 1) {
+			return;
+		}
 		String dateString = cursor.getString(cursor.getColumnIndexOrThrow(Metingen.COLUMN_NAME_DATUM));
 		SimpleDateFormat format = 
 				new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
