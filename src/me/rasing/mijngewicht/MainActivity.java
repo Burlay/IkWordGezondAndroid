@@ -108,12 +108,12 @@ public class MainActivity extends FragmentActivity
     		.replace(R.id.container, new HistoryFragment())
     		.commit();
     		break;
+    	//case 2:
+    	//	fragmentManager.beginTransaction()
+    	//	.replace(R.id.container, new HistoryFragment())
+    	//	.commit();
+    	//	break;
     	case 2:
-    		fragmentManager.beginTransaction()
-    		.replace(R.id.container, new HistoryFragment())
-    		.commit();
-    		break;
-    	case 3:
     		Intent intent = new Intent(this, PreferencesActivity.class);
     		this.startActivity(intent);
     	}

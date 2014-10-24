@@ -12,7 +12,7 @@ public class PreferencesFragment extends PreferenceFragment {
 		super.onCreate(savedInstanceState);
 
 		// Load the preferences from an XML resource
-		addPreferencesFromResource(R.xml.unit_preferences);// show the current value in the settings screen
+		addPreferencesFromResource(R.xml.profile_preferences);// show the current value in the settings screen
 		
 	    for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
 	        Preference pref = getPreferenceScreen().getPreference(i);

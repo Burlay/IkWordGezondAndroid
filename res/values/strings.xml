@@ -20,7 +20,7 @@
     <string-array name="drawer_items">
         <item>@string/weight</item>
         <item>@string/geschiedenis</item>
-        <item>@string/profiel</item>
+        <!-- <item>@string/profiel</item> -->
         <item>@string/settings</item>
     </string-array>
     

@@ -19,11 +19,13 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri.Builder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -31,6 +33,12 @@ public class NotificationScheduler extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean notificationPreference = sharedPref.getBoolean("remind_weighing", false);
+		if (notificationPreference == false) {
+			return;
+		}
+		
 		String[] projection = {Metingen.COLUMN_NAME_DATUM};
 
 		Builder b = GewichtProvider.METINGEN_URI.buildUpon();

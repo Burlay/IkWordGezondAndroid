@@ -106,6 +106,11 @@ public class NavigationDrawerFragment extends Fragment implements MeasurementsMo
 			public void onClick(View v) {
 				selectItem(1);
 			}});
+    	mNavDrawer.findViewById(R.id.nav_settings).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				selectItem(2);
+			}});
        
     	weightView = (TextView) mNavDrawer.findViewById(R.id.nav_weight);
 	    weightLostView = (TextView) mNavDrawer.findViewById(R.id.nav_weightlost);
@@ -274,7 +279,7 @@ public class NavigationDrawerFragment extends Fragment implements MeasurementsMo
     	if (days != null) {
 	    	String lastWeighing = "";
 	    	if (days == 0) {
-	    		lastWeighing = "Vandaag gowogen.";
+	    		lastWeighing = "Vandaag gewogen.";
 	    	} else if (days == 1) {
 	    		lastWeighing = "Gisteren gewogen";
 	    	} else if (days == 2) {

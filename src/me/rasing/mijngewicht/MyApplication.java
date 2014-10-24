@@ -1,7 +1,7 @@
 package me.rasing.mijngewicht;
 
 import android.app.Application;
-import android.util.Log;
+import android.preference.PreferenceManager;
 
 public class MyApplication extends Application {
 
@@ -12,6 +12,6 @@ public class MyApplication extends Application {
 		NotificationScheduler notificationScheduler = new NotificationScheduler();
 		notificationScheduler.ScheduleRepeatingNotification(this.getApplicationContext());
 		
-		Log.e("HELLO", "DO AWESOME STUFF HERE");
+		PreferenceManager.setDefaultValues(this.getApplicationContext(), R.xml.profile_preferences, false);
 	}
 }

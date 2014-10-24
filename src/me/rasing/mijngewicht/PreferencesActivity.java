@@ -10,7 +10,7 @@ public class PreferencesActivity extends FragmentActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_meeting_invoeren);
 		
 		String tag = "Preferences";
 

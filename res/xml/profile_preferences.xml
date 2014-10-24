@@ -1,5 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
+    <!--<ListPreference
         android:title="@string/gender"
         android:entries="@array/genders"
         android:entryValues="@array/genders_values"
@@ -9,5 +9,14 @@
         android:key="length" />
     <me.rasing.mijngewicht.DatePickerPreference
         android:title="@string/birthdate"
-        android:key="birhtdate" />
+        android:key="birhtdate" />-->
+    <PreferenceCategory
+        android:title="Notificaties">
+        <CheckBoxPreference
+            android:summaryOff="herinnering niet tonen"
+            android:summaryOn="herinnering tonen"
+            android:title="Weeg herinnering"
+            android:key="remind_weighing"
+            android:defaultValue="false" />
+    </PreferenceCategory>
 </PreferenceScreen>
